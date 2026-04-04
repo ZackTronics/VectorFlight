@@ -23,13 +23,16 @@ The ground control program can be ran in loopback mode to control a simulation t
 6.  Begin.
 
 
+Key Files in the Repo to look at:
 
+	Simulation Engine
+	https://github.com/ZackTronics/VectorFlight/tree/main/GroundControlStation/OpenGL/z01_SimFlightControl.h
 
+	Flight Control Algorithm
+	https://github.com/ZackTronics/VectorFlight/tree/main/GroundControlStation/OpenGL/GL_4_Animate.h
 
-
-
-
-
+	Communication Protocols
+	https://github.com/ZackTronics/VectorFlight/tree/main/GroundControlStation/Communications
 
 ---
 
