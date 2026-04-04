@@ -1,5 +1,5 @@
 # VectorFlight
-### High-Fidelity Flight Control Stack & 6-DOF Physics Simulator
+### Flight Control Stack & Physics Simulation
 
 
 https://zacktronics.com/
