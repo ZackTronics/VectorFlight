@@ -6,11 +6,20 @@ https://zacktronics.com/
 
 **VectorFlight** is a comprehensive aerospace engineering project developed in my free time over the course of 5 years.
 
-It is essentially a sophisticated but fast telemetry protocol, a physica simulation and a drone control program that runs wihin the simulation.
-It extensively uses vector arithmatic for the control algorithms. and you can plug an Xbox controller into the gorund control station.
-
+It includesa a sophisticated but fast telemetry protocol, a physics simulation and a drone control program that runs wihin the simulation.
+It extensively uses vector arithmatic for the control algorithms. and you can plug an Xbox controller into the ground control station.
 The same software can run as either a ground control program or headless as an embededed program.
 They talk to eachother and the headless mode version can talk to a microcontroller via I2C.
+
+Key Files in the Repo to look at:
+	Simulation Engine
+	https://github.com/ZackTronics/VectorFlight/tree/main/GroundControlStation/OpenGL/z01_SimFlightControl.h
+
+	Flight Control Algorithm
+	https://github.com/ZackTronics/VectorFlight/tree/main/GroundControlStation/OpenGL/GL_4_Animate.h
+
+	Communication Protocols
+	https://github.com/ZackTronics/VectorFlight/tree/main/GroundControlStation/Communications
 
 
 For the most simple demo.
@@ -24,7 +33,6 @@ The ground control program can be ran in loopback mode to control a simulation t
 
 
 Key Files in the Repo to look at:
-
 	Simulation Engine
 	https://github.com/ZackTronics/VectorFlight/tree/main/GroundControlStation/OpenGL/z01_SimFlightControl.h
 
