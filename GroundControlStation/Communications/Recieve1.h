@@ -1,0 +1,189 @@
+#ifndef RECIEVE1_H
+#define RECIEVE1_H
+
+#include "Functions/OtherFunctions.h"
+#include "Functions/ConvNums2QBArrs.h"
+#include "Functions/ConvQBArr2Nums.h"
+#include <QString>
+#include "Globals/globalDefines.h"
+
+
+extern unsigned long int uliPacketsReceived;
+
+
+
+//*******************************************************
+void MainWindow::udpPacketReceived()
+    {
+    QByteArray      Buffer;
+    QHostAddress    returnAddress;
+    quint16         senderPort;
+    Buffer.resize(udpSocket->pendingDatagramSize());
+    udpSocket->readDatagram(Buffer.data(),Buffer.size(),&returnAddress, &senderPort);
+    if (returnAddress != QHostAddress(sTargetIPAddress))   sTargetIPAddress = returnAddress.toString();
+    usint CRCInHeader  = (usint) QByteArray2lluint(Buffer.right(sizeof(usint)));
+    usint CRC_2        = crcx25((unsigned char*) Buffer.data(), sizeof((unsigned char*) Buffer.data()));
+    if (CRCInHeader != CRC_2){
+        QByteArray logRow;
+        logRow.append("Received bad CRC packet");
+        pleaseLogEvent(Qt::red, logRow, defCommsLog);
+        return;
+        }
+    if ((Buffer.size()) < 4){ // *** UPDATE THIS NUMBER ***
+        QByteArray logRow;
+        logRow.append("Received short packet");
+        pleaseLogEvent(Qt::red, logRow, defCommsLog);
+        return;
+        }
+    //update stats
+    uliPacketsReceived++;
+    uliBytesReceived = uliBytesReceived + Buffer.size();
+    //Process ZackPackets
+
+    packetTypeDescType PacketType           = (packetTypeDescType) QByteArray2lluint(Buffer.mid(0, sizeof(packetTypeDescType)));
+    ullint             incomingPacketSeqNum = (packetSeqType)      QByteArray2lluint(Buffer.mid(sizeof(packetTypeDescType), sizeof(ullint)));
+
+    int pleaseAckThisPacket = 0;
+    if (PacketType == zackPacket){
+        if (connectionStatus==0) connectionStatus =1;
+        timeLastPacketReceived  = QDateTime::currentDateTime().toMSecsSinceEpoch();
+        //************************************************************************
+        //Update Comms Log
+        if ((glbLogWriteToFile[defCommsLog]) || (glbLogCanScroll[defCommsLog])){
+            QByteArray logRow;
+            logRow.append("RECEIVED ZPacket From:");
+            logRow.append(returnAddress.toString());
+            logRow.append(" TotalSize=");         logRow.append(QString::number(Buffer.size()));
+            logRow.append(" SequenceNum=");   logRow.append(QString::number(incomingPacketSeqNum));
+            logRow.append(" CRC=");            logRow.append(QString::number(CRCInHeader));
+            pleaseLogEvent(Qt::darkMagenta, logRow, defCommsLog);
+            }
+        //************************************************************************
+
+        //Process packlet
+
+        int packletStart = sizeof(packetTypeDescType) + sizeof(packetSeqType);
+        int PackletNum = 0;
+        int packletsRemaining = 1;
+
+        while(packletsRemaining){
+            PackletNum++;
+
+            //THIS CODE ALSO APPEARS in dataTransmit
+            int paramOffset = packletStart;
+            //Get packletSize---------------------------------------------------------------------
+                    packletSizeType
+                    packletSize =
+                   (packletSizeType)    QByteArray2lluint(Buffer.mid(paramOffset,
+             sizeof(packletSizeType))); paramOffset = paramOffset +
+             sizeof(packletSizeType);
+            /*
+            //get destComp---------------------------------------------------------------------
+                    destCompType
+                    destComp =
+                   (destCompType)       QByteArray2lluint(Buffer.mid(paramOffset,
+             sizeof(destCompType)));    paramOffset = paramOffset +
+             sizeof(destCompType);
+            //get sourceComp---------------------------------------------------------------------
+                    sourceCompType
+                    sourceComp =
+                   (sourceCompType)     QByteArray2lluint(Buffer.mid(paramOffset,
+             sizeof(sourceCompType)));  paramOffset = paramOffset +
+             sizeof(sourceCompType);
+            */
+            //get MsgID---------------------------------------------------------------------
+                    MsgIDType
+                    MsgID =
+                   (MsgIDType)          QByteArray2lluint(Buffer.mid(paramOffset,
+             sizeof(MsgIDType)));       paramOffset = paramOffset +
+             sizeof(MsgIDType);
+            //---------------------------------------------------------------------
+            int bodyOffset = paramOffset;
+
+            //************************************************************************
+            //Update Comms Log
+            if ((glbLogWriteToFile[defCommsLog]) || (glbLogCanScroll[defCommsLog])){
+                QByteArray logRow;                      logRow.append("		POP  Packlet=");    logRow.append(QString::number(PackletNum));
+                                                        logRow.append(" Size=");                logRow.append(QString::number(packletSize));
+                /*                                      logRow.append(" dest=");                logRow.append(QString::number(destComp));
+                if (destComp    == ControlLaptop)       logRow.append(" (Laptop)");
+                if (destComp    == Beagleboard)         logRow.append(" (BeagleBD)");
+                if (destComp    == Flightboard)         logRow.append(" (FlightBD)");
+                                                        logRow.append(" source=");              logRow.append(QString::number(sourceComp));
+                if (sourceComp  == ControlLaptop)       logRow.append(" (Laptop)");
+                if (sourceComp  == Beagleboard)         logRow.append(" (BeagleBD)");
+                if (sourceComp  == Flightboard)         logRow.append(" (FlightBD)");*/
+                pleaseLogEvent(Qt::darkMagenta, logRow, defCommsLog);
+                logRow.clear();                         logRow.append("		\t");
+                if (MsgID== ZPack_Acknowledge)          logRow.append(" (ACK)");
+                if (MsgID== ZPack_XBoxControllerWord)   logRow.append(" (XBOX)");
+                if (MsgID== ZPack_WriteSuperVar)       {logRow.append(" (WRITE VarID=)");          QByteArray b = Buffer.mid(packletStart + sizeof(MsgID)+sizeof(usint),sizeof(varIDtype )); logRow.append( QString::number(QByteArray2lluint(b))  + " Name="+getName(QByteArray2lluint(b))+ ")");}
+                if (MsgID== ZPack_ReadRequest)         {logRow.append(" (READ REQUEST VarID=");    QByteArray b = Buffer.mid(packletStart + sizeof(MsgID)+sizeof(usint),sizeof(varIDtype )); logRow.append( QString::number(QByteArray2lluint(b))  + " Name="+getName(QByteArray2lluint(b))+ ")");}
+                if (MsgID== ZPack_ReadResponse)        {logRow.append(" (READ RESPONSE VarID=");   QByteArray b = Buffer.mid(packletStart + sizeof(MsgID)+sizeof(usint),sizeof(varIDtype )); logRow.append( QString::number(QByteArray2lluint(b))  + " Name="+getName(QByteArray2lluint(b))+ ")");}
+                if (MsgID== ZPack_HeartBeat)            logRow.append(" (HEARTBEAT)");
+                                                        logRow.append(" MsgID=");           logRow.append(QString::number(MsgID));
+                                                        logRow.append(" Body=");
+                QByteArray l; l=Buffer.mid(bodyOffset, packletSize); l=l.left(l.size()-sizeof(usint)); l=QByteArray2Hex(l);
+                                                        logRow.append(l);
+                pleaseLogEvent(Qt::darkMagenta, logRow, defCommsLog);
+                }
+            //************************************************************************
+            //Process Packets
+            if (MsgID == ZPack_WriteSuperVar){  //incoming write command
+                process_ZPack_IncomingSuperVar (Buffer, bodyOffset, packletSize, incomingPacketSeqNum, returnAddress);
+                pleaseAckThisPacket = 1;
+                }
+            if (MsgID == ZPack_ReadResponse){
+#ifndef TARGET_HARDWARE_PI
+                //***begin debug
+                /*
+                static ullint lastTime_PolledInterval1_OLD;
+                if (lastTime_PolledInterval1_OLD != lastTime_PolledInterval[1]){
+                    qDebug() << "ZPack_ReadResponse time=" << QDateTime::currentDateTime().toMSecsSinceEpoch() - lastTime_PolledInterval[1]; //doesn't work if interval 2 vars exist
+                    }
+                lastTime_PolledInterval1_OLD = lastTime_PolledInterval[1];
+                */
+                //***end debug
+#endif
+                process_ZPack_IncomingSuperVar (Buffer, bodyOffset, packletSize, incomingPacketSeqNum, returnAddress);
+                pleaseAckThisPacket = 1;
+                }
+            if (MsgID == ZPack_ReadRequest){
+                process_ZPack_ReadRequest (Buffer, bodyOffset, packletSize, incomingPacketSeqNum, returnAddress);
+                pleaseAckThisPacket = 1;
+                }
+            if (MsgID == ZPack_XBoxControllerWord){
+                process_ZPack_XBoxControllerWord (Buffer, bodyOffset, incomingPacketSeqNum, returnAddress);
+                pleaseAckThisPacket = 1;
+                //releaseOutPacket(QHostAddress(sTargetIPAddress), nonCriticalPacket);
+                }
+            if (MsgID == ZPack_HeartBeat){
+                process_ZPack_HeartBeat (Buffer, bodyOffset, packletSize, incomingPacketSeqNum, returnAddress);
+                pleaseAckThisPacket = 1;
+                }
+            if (MsgID == ZPack_Acknowledge){
+                process_ZPack_Acknowledgment (Buffer, bodyOffset, incomingPacketSeqNum, returnAddress);
+                }
+            //this code relates to the looping of all packlets
+            //qDebug() << "Start=" << packletStart << "END= " << packletStart + packletSize  << "PacketSize=" <<Buffer.size();
+            //qDebug() << "Packlet ends X bytes before end of packet " << Buffer.size() - (packletStart + packletSize);
+            //qDebug() << bytesRemainingThisPacket;
+            int bytesRemainingThisPacket = Buffer.size() - (packletStart + packletSize);
+            //qDebug() << bytesRemainingThisPacket;
+            if (bytesRemainingThisPacket <= 2){
+                packletsRemaining = 0;
+                }
+            else{
+                packletStart = packletStart + packletSize;
+                }
+            }
+        if (pleaseAckThisPacket){
+            push_ZPack_Acknowledgment     (anyComponent, incomingPacketSeqNum);
+            //We only push a signle ack for the entire packet.  I'm not sure when it's released... prob the heartbeat
+            }
+        }
+    }
+
+
+
+#endif // RECIEVE1_H

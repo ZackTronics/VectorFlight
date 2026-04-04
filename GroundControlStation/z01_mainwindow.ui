@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>809</width>
+    <height>631</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QPushButton" name="pushButton_1">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>550</y>
+      <width>103</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Button 1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>550</y>
+      <width>103</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Button 2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>550</y>
+      <width>103</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Button 3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>550</y>
+      <width>103</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Button 4</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>550</y>
+      <width>103</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Button 5</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>550</y>
+      <width>103</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Button 6</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>550</y>
+      <width>103</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Button 7</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_background">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>811</width>
+      <height>711</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>Initializing</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>809</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionQuit"/>
+    <addaction name="actionSave_all_settings"/>
+    <addaction name="actionLoad_settings"/>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Main Display</string>
+    </property>
+    <addaction name="action_Normal_Mode"/>
+    <addaction name="actionView_Controller"/>
+    <addaction name="actionView_Comms_Log_2"/>
+    <addaction name="actionView_Events_Log"/>
+    <addaction name="actionCalibrate_Controller"/>
+    <addaction name="actionDBG_See_Rmote_Controller"/>
+    <addaction name="actionHelicopter_Simulation"/>
+   </widget>
+   <widget class="QMenu" name="menuCommunication">
+    <property name="title">
+     <string>Parameters</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="actionStatistics"/>
+    <addaction name="actionAircraft_Status"/>
+    <addaction name="actionRe_Handshake_With_Chopper"/>
+    <addaction name="actionAircraft_Geometry"/>
+    <addaction name="actionLoad_Default_Settings"/>
+    <addaction name="actionAutopilot_Settings"/>
+   </widget>
+   <widget class="QMenu" name="menuCommand">
+    <property name="title">
+     <string>Command</string>
+    </property>
+    <addaction name="actionMark_Origin"/>
+    <addaction name="actionEnable_Advanced_Logging"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuCommand"/>
+   <addaction name="menuCommunication"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionCalibrate_Controller">
+   <property name="text">
+    <string>Controller Calibration</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionView_Controller">
+   <property name="text">
+    <string>Controller Input</string>
+   </property>
+  </action>
+  <action name="actionRe_Acquire_Controller">
+   <property name="text">
+    <string>Re-Acquire Controller</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Communication Settings</string>
+   </property>
+  </action>
+  <action name="actionVariable_List">
+   <property name="text">
+    <string>Variable List</string>
+   </property>
+  </action>
+  <action name="actionStatistics">
+   <property name="text">
+    <string>Communication Stats</string>
+   </property>
+  </action>
+  <action name="actionDisplay_Remote_Controller">
+   <property name="text">
+    <string>Display Remote Controller</string>
+   </property>
+  </action>
+  <action name="actionView_Comms_Log">
+   <property name="text">
+    <string>View Comms Log</string>
+   </property>
+  </action>
+  <action name="actionView_Event_Log">
+   <property name="text">
+    <string>View Event Log</string>
+   </property>
+  </action>
+  <action name="actionMotion_Characteristics">
+   <property name="text">
+    <string>Aircraft Settings</string>
+   </property>
+  </action>
+  <action name="actionAircraft_Status">
+   <property name="text">
+    <string>All Parameters</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionDBG_See_Rmote_Controller">
+   <property name="text">
+    <string>(DBG) Remote Controller</string>
+   </property>
+  </action>
+  <action name="actionView_Comms_Log_2">
+   <property name="text">
+    <string>Comms Log</string>
+   </property>
+  </action>
+  <action name="actionView_Events_Log">
+   <property name="text">
+    <string>Event Log</string>
+   </property>
+  </action>
+  <action name="action_Normal_Mode">
+   <property name="text">
+    <string>Normal Mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionRe_Handshake_With_Chopper">
+   <property name="text">
+    <string>Re-Handshake With Aircraft</string>
+   </property>
+  </action>
+  <action name="actionCapture_Avg_Ping_for_Reference">
+   <property name="text">
+    <string>Reset Ping Baseline</string>
+   </property>
+  </action>
+  <action name="actionHelicopter_Simulation">
+   <property name="text">
+    <string>Helicopter Simulation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionAircraft_Geometry">
+   <property name="text">
+    <string>Aircraft Geometry</string>
+   </property>
+  </action>
+  <action name="actionLoad_Default_Settings">
+   <property name="text">
+    <string>Load Default Settings</string>
+   </property>
+  </action>
+  <action name="actionSave_all_settings">
+   <property name="text">
+    <string>Save settings</string>
+   </property>
+  </action>
+  <action name="actionLoad_settings">
+   <property name="text">
+    <string>Load settings</string>
+   </property>
+  </action>
+  <action name="actionMark_Origin">
+   <property name="text">
+    <string>Mark Origin</string>
+   </property>
+  </action>
+  <action name="actionAutopilot_Settings">
+   <property name="text">
+    <string>Autopilot Settings</string>
+   </property>
+  </action>
+  <action name="actionEnable_Advanced_Logging">
+   <property name="text">
+    <string>Enable Advanced Logging</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,9 +1,35 @@
 # VectorFlight
 ### High-Fidelity Flight Control Stack & 6-DOF Physics Simulator
 
-**VectorFlight** is a comprehensive aerospace engineering project designed to bridge the gap between digital logic and mechanical reality. Developed over five years of iterative engineering, this repository contains a complete flight control ecosystem—from low-level MEMS sensor fusion to a high-level 3D Ground Control Station (GCS).
 
-The project was born from a deep fascination with physics and a professional commitment to "mission-critical" reliability, drawing on my background as a Naval-trained nuclear reactor operator to deliver a robust, failsafe-oriented architecture.
+https://zacktronics.com/
+
+**VectorFlight** is a comprehensive aerospace engineering project developed in my free time over the course of 5 years.
+
+It is essentially a sophisticated but fast telemetry protocol, a physica simulation and a drone control program that runs wihin the simulation.
+It extensively uses vector arithmatic for the control algorithms. and you can plug an Xbox controller into the gorund control station.
+
+The same software can run as either a ground control program or headless as an embededed program.
+They talk to eachother and the headless mode version can talk to a microcontroller via I2C.
+
+
+For the most simple demo.
+The ground control program can be ran in loopback mode to control a simulation that is rendered with OpenGL.
+1.  Open the "pro" file with Qt Creator.
+2.  After the program starts, it will complain about missing OpenGL models.
+3.  Copy the "models" folder to the compiled directory, aka  build-SendingUnit-Desktop_Qt_5_5_1_MSVC2010_32bit-Debug/models
+4.  Run the program again.
+5.  Plug in an Xbox controller
+6.  Begin.
+
+
+
+
+
+
+
+
+
 
 ---
 

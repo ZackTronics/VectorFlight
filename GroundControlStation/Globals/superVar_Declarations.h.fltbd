@@ -1,0 +1,709 @@
+     unsigned char guardA;
+     float Sensor_Accelerometer_X;
+     float Sensor_Accelerometer_Y;
+     float Sensor_Accelerometer_Z;
+     unsigned short int FlighboardErrorCode;
+     unsigned short int FlighboardErrorCode2;
+     QString FlighboardErrorString[50];
+     float Sensor_Accelerometer_Magnitude;
+     float Sensor_Accelerometer_RelAzimuth;
+     float Sensor_Accelerometer_RelIncline;
+     float Sensor_Compass_X;
+     float Sensor_Compass_Y;
+     float Sensor_Compass_Z;
+     float Sensor_Compass_FieldStrength;
+     float Sensor_Compass_NorthRelAzimuth;
+     float Sensor_Compass_NorthRel_Incline;
+     float Sensor_Baro_psia;
+     float Sensor_Baro_altimeter;
+     float Sensor_Baro_temp;
+     float Sensor_Gyro_yawRate;
+     float Sensor_Gyro_pitchRate;
+     float Sensor_Gyro_rollRate;
+     float Sensor_Gyro_RelAzimuth;
+     float Sensor_Gyro_Rel_Incline;
+     float Sensor_Gyro_Rate;
+     unsigned char Sensor_GPS_IsAvailable;
+     ullint Sensor_GPS_Time;
+     unsigned short int Sensor_GPS_Altitude;
+     double Sensor_GPS_Lattitude;
+     double Sensor_GPS_Longitude;
+     float Sensor_GPS_Heading;
+     float Sensor_GPS_Speed;
+     float Sensor_GPS_Climbrate;
+     float Battery_ActualVoltage;
+     float Battery_EffectiveVoltage;
+     float Battery_PercentRemainingInstantaneous;
+     float Battery_PercentRemainingFiltered;
+     float Battery_batteryPercentPerMinute;
+     float Battery_flightTimeRemaining;
+     float throttleValues[7];
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+     float secondsElapsed;
+     unsigned char AutoPilot_Enabled;
+     unsigned char UserInput_AutoClimb;
+     unsigned char UserInput_AutoLateral;
+     unsigned char UserInput_AutoYaw;
+     unsigned char UserInput_ControlAzimuthIsHeliRelative;
+     unsigned int paramSetChecksum_Flightboard;
+     unsigned int counter_FB_mainLoop;
+     unsigned int counter_FB_push_1;
+     unsigned int counter_FB_push_2;
+     unsigned int counter_FB_push_3;
+     unsigned int counter_FB_get_1;
+     unsigned int counter_FB_get_2;
+     unsigned int bufferVar_DoNotUse;
+     unsigned short int xx_VAR_ID_OF_HIGHEST_I2C_POLLED_VAR_xx;
+     unsigned char I2C_Error;
+     unsigned short int I2C_PollingPeriodMsecs;
+     unsigned char ControllerInput[3];
+//intentionally blank
+//intentionally blank
+//intentionally blank
+     unsigned short int ControllerInput_LT;
+     unsigned short int ControllerInput_RT;
+     unsigned short int ControllerInput_LJ_Mag;
+     unsigned short int ControllerInput_LJ_Ang;
+     unsigned short int ControllerInput_RJ_Mag;
+     unsigned short int ControllerInput_RJ_Ang;
+//Used by flight algorithm and flight sim
+     float UserInput_DirectionStick_Mag;
+     float UserInput_DirectionStick_Azi;
+     float UserInput_Travel_Mag;
+     float UserInput_Travel_Azi;
+     float UserInput_ThrottleStick;
+     float UserInput_ThrottleStickEnhanced;
+     float UserInput_Trigger_Right;
+     float UserInput_Trigger_Left;
+     unsigned short int AutoPilot_ConnectionStatusOfHeli;
+//Modes
+     float AutoPilot_CommLoss_Delay_PositionHold;
+     int AutoPilot_CommLoss_Delay_PositionHold_Enabled;
+     float AutoPilot_CommLoss_Delay_ReturnHome;
+     int AutoPilot_CommLoss_Delay_ReturnHome_Enabled;
+     float AutoPilot_CommLoss_Delay_Land;
+     int AutoPilot_CommLoss_Delay_Land_Enabled;
+     int AutoPilot_LowBatt_Percent_ReturnHome_AutoSetEnabled;
+     float AutoPilot_LowBatt_Percent_ReturnHome;
+     int AutoPilot_LowBatt_Percent_ReturnHome_Enabled;
+     float AutoPilot_LowBatt_Percent_LandNow;
+     int AutoPilot_LowBatt_Percent_LandNow_Enabled;
+     float AutoPilot_LowBatt_Percent_KillSystem;
+     int AutoPilot_LowBatt_Percent_KillSystem_Enabled;
+     float AutoPilot_LowBatt_Percent_TimeDelay;
+     float AutoPilot_ReturnHomeAltitudeAboveTakeoff;
+     float AutoPilot_ReturnHomeAltitudeObjectiveToleranceReqd;
+     float AutoPilot_distanceToNextWaypoint;
+     float AutoPilot_distanceNeededToStopAircraft;
+     float AutoPilot_wayPointDistanceTolerance;
+     float AutoPilot_MaxTransitSpeed;
+     float AutoPilot_descentRate;
+     int AutoPilot_Step;
+     double AutoPilot_NextWayPoint_Latitude;
+     double AutoPilot_NextWayPoint_Longitude;
+     int GoBack_UserInput_AutoClimb;
+     int GoBack_UserInput_AutoLateral;
+     int GoBack_UserInput_AutoYaw;
+//Position
+     double Position_Latitude;
+     double Position_Longitude;
+     float Position_Altitude;
+     double Position_Origin_Latitude;
+     double Position_Origin_Longitude;
+     float Position_Origin_Altitude;
+     float Position_DistanceFromOrigin_X;
+     float Position_DistanceFromOrigin_Y;
+     float Position_FromOrigin_Distance;
+     float Position_FromOrigin_Azimuth;
+     float Position_FromOrigin_Altitude;
+     int Position_CraftIsAirborne;
+     float tooHigh;
+//Lateral
+     float Motion_Lateral_EffectOf_P_Mag;
+     float Motion_Lateral_EffectOf_P_Azi;
+     float Motion_Lateral_EffectOf_I_Mag;
+     float Motion_Lateral_EffectOf_I_Azi;
+     float Motion_Lateral_EffectOf_D_Mag;
+     float Motion_Lateral_EffectOf_D_Azi;
+     float Motion_Lateral_VelocErr_Integrated_Mag;
+     float Motion_Lateral_VelocErr_Integrated_Azi;
+     float Motion_Lateral_VelocityError_Mag;
+     float Motion_Lateral_VelocityError_Azi;
+     float Motion_Lateral_VelocDesire_Mag;
+     float Motion_Lateral_VelocDesire_Azi;
+     float Motion_Lateral_Accelration_Mag;
+     float Motion_Lateral_Accelration_Azi;
+     float Motion_Lateral_Velocity_Mag;
+     float Motion_Lateral_Velocity_Azi;
+     float Motion_Tilt_Desired_Mag;
+     float Motion_Tilt_Desired_Azi;
+     float Motion_Tilt_EffectOf_P_Mag;
+     float Motion_Tilt_EffectOf_P_Azi;
+     float Motion_Tilt_EffectOf_D_Mag;
+     float Motion_Tilt_EffectOf_D_Azi;
+     float Motion_Tilt_Error_Mag;
+     float Motion_Tilt_Error_Azi;
+     float Motion_Tilt_Velocity_Composite_Mag;
+     float Motion_Tilt_Velocity_Composite_Azi;
+     float Motion_Tilt_Velocity_Mems_Mag ;
+     float Motion_Tilt_Velocity_Mems_Azi;
+     float Motion_Tilt_TorqueNeeded_Mag;
+     float Motion_Tilt_TorqueNeeded_Azi;
+     float Motion_Tilt_Actual_Mag;
+     float Motion_Tilt_Actual_Azi;
+//Yaw
+     float Motion_YawDesiredNoseAzimuth;
+     float Motion_NoseAzimuthError;
+     float Motion_YawNoseErrorP;
+     float Motion_YawNoseErrorD;
+     float Motion_Yaw_UserCommand;
+     float Motion_Yaw_MaxRateNoClimbEffect;
+     float Motion_Yaw_AircraftNose_Azi;
+     float Motion_Yaw_Error_P;
+     float Motion_Yaw_Error_I;
+     float Motion_Yaw_Error_D;
+     float Motion_Yaw_EffectOf_P;
+     float Motion_Yaw_EffectOf_I;
+     float Motion_Yaw_EffectOf_D;
+     float Motion_Yaw_Velocity;
+     float Motion_Yaw_TorqueRequested;
+     float Motion_Yaw_VelocityRequested;
+     float Motion_Yaw_VelocityError;
+     float Motion_Yaw_Acceleration;
+     float Motion_Yaw_VelocityError_Integrated;
+     float Motion_Yaw_VelocityDesired;
+     float Motion_Yaw_MaxYawRateDesired;
+     float Sensor_Composite_NoseAzimuth;
+//Vertical
+     float Motion_DesiredAltitudeAboveSeaLevel;
+     float Motion_DesiredAltitudeAboveTakeoff;
+     float Motion_AltitudeError;
+     float Motion_AltitudeErrorP;
+     float Motion_ClimbRate_Actual;
+     float Motion_ClimbRate_Desired;
+     float Motion_Climb_EffectOf_P;
+     float Motion_Climb_EffectOf_I;
+     float Motion_Climb_EffectOf_D;
+     float Motion_climbRateErrorD;
+     float Motion_climbAcceleration;
+     float Motion_climbRateError;
+     float Motion_ClimbRateError_Integrated;
+     float Thrust_ThrottleSignal;
+     float Thrust_MotorThrottleSummation;
+     float Thrust_PredictedActual;
+     float Thrust_Downward;
+     float Thrust_Lateral;
+     float Characteristic_craftWeight;
+     float Characteristic_maxTiltForDesiredClimb;
+     float Characteristic_maxTiltForZeroClimb;
+     float Characteristic_topSpeed;
+     float Characteristic_topSpeedZeroClimb;
+//Motors
+     float predictedActualThrust[7];
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+     unsigned char motorFailureDetected[7];
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//Sensors
+     float Sensor_AccelerometerOrientationAccuracyMagnitude;
+     float Sensor_AccelerometerOrientationRelAzimuth;
+     float Sensor_AccelerometerOrientationRel_Incline;
+     float Sensor_AccelerometerAccelerationAccuracyMagnitude;
+     float Sensor_AccelerometerAccelerationRelAzimuth;
+     float Sensor_AccelerometerAccelerationRelPitch;
+     float Sensor_MagneticOrientationAccuracyMagnitude;
+     float Sensor_MagneticOrientationTrueHeading;
+     float Sensor_MagneticOrientationRollRelAzimuth;
+     float Sensor_MagneticOrientationRoll_Incline;
+     float Sensor_Composite_Pitch;
+     float Sensor_Composite_Roll;
+     float Sensor_Composite_Yaw;
+//Motion Characteristics
+//Motion Characteristics
+//Motion Characteristics
+//Motion Characteristics
+//Settings and Commands
+     float UserInput_Sensitivity_Throttle;
+     float UserInput_Sensitivity_DirectionStick;
+     float UserInput_Sensitivity_Yaw;
+     unsigned char Command_PleaseReturnHome;
+     unsigned char Command_PleaseUnlockMotors;
+     unsigned char Command_PleaseMarkThisAsOrigin;
+     float Setpoint_TransitHomeAltitudeAboveGround;
+     float Setpoint_Ceiling_SeaLevel;
+     float Setpoint_Ceiling_DistanceAboveTakeoff;
+//PID Values
+     float Control_Lateral_P;
+     float Control_Lateral_D;
+     float Control_Lateral_I;
+     float Control_Lateral_I_MaxWindup;
+     float Control_Lateral_TopSpeedCorrectionK;
+     float Control_Climb_P;
+     float Control_Climb_D;
+     float Control_Climb_I;
+     float Control_Climb_I_MaxWindup;
+     float Control_Tilt_P;
+     float Control_Tilt_D;
+     unsigned char Control_Tilt_PleaseUseGyroAndAccel;
+     float Control_Yaw_P;
+     float Control_Yaw_D;
+     float Control_Yaw_I;
+     float Control_Yaw_I_MaxWindup;
+     float Control_Yaw_MaxYawRateDesired;
+//Aircraft Geometry
+     float motor_ResponseTC;
+     unsigned char numberOfMotors;
+     float angle_motor_[7];
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+     unsigned char doesRotateClockwise_motor[7];
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+     unsigned char simuMotorFailure[7];
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//Simulated Heli
+//intentionally blank
+//intentionally blank
+     unsigned char freezeSimulatedHeli;
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//intentionally blank
+//Instrumentation
+     float Sensor_FilterTimeConstantBarometer;
+     float Sensor_FilterTimeConstantAccelerometer;
+     float Sensor_FilterTimeConstantGyro;
+     float Sensor_FilterTimeConstantCompass;
+     float Sensor_FilterTimeConstantGPSHorizontal;
+     float Sensor_FilterTimeConstantGPSVertical;
+     float Sensor_FilterTimeConstantThrustMagnitudeChange;
+     float Sensor_FilterTimeConstantBatteryPercent;
+     float Sensor_memsZeroYawRate;
+     float Sensor_memsZeroRollRelAzimuth;
+     float Sensor_memsZeroRollRate;
+     float Sensor_declinationAbsAzimuth;
+     float Sensor_declinationAbsPitch;
+     float Battery_MinCellvoltage;
+     float Battery_MaxCellvoltage;
+     float Battery_VoltageDropFullThrottle;
+     float Battery_PercentRemainingFilteringTC;
+     float Battery_flightTimeNeededToReachHome;
+     float testVariable1;
+     double testVariable2;
+     float debugVar1;
+     float debugVar2;
+     float debugVar3;
+     float debugVar4;
+     float debugVar5;
+//Netowork and Debugging
+     unsigned int paramSetVersion;
+     unsigned int paramSetChecksum;
+     int HeartbeatInterval;
+     int iControllerPacketInterval;
+     ullint pollingInterval[3];
+//intentionally blank
+//intentionally blank
+     int expectedPingForThisNetwork;
+     int enumIPAddressingMode;
+     int HelicopterMode;
+     QString sTargetIPAddress[50];
+     int savePolledVarsToDisk;
+     unsigned char glbSystemID;
+
+
+
+void setVariableData(){
+;
+//Flightboard Variables
+addSuperVar_unsigned_char(&guardA,     "guardA", I2CFast ,1,"units - comment");
+addSuperVar_float(&Sensor_Accelerometer_X,     "Sensor_Accelerometer_X", I2CFast ,1,"units - comment");
+addSuperVar_float(&Sensor_Accelerometer_Y,     "Sensor_Accelerometer_Y", I2CFast ,1,"minutes - comment");
+addSuperVar_float(&Sensor_Accelerometer_Z,     "Sensor_Accelerometer_Z", I2CFast ,1,"minutes - comment");
+addSuperVar_unsigned_short_int(&FlighboardErrorCode,     "FlighboardErrorCode", I2CSlow ,1,"minutes - comment");
+addSuperVar_unsigned_short_int(&FlighboardErrorCode2,     "FlighboardErrorCode2", I2CSlow ,1,"minutes - comment");
+addSuperVar_QString(FlighboardErrorString,     "FlighboardErrorString", I2CSlow ,1,"minutes - comment");
+addSuperVar_float(&Sensor_Accelerometer_Magnitude,     "Sensor_Accelerometer_Magnitude", I2CSlow ,1,"minutes - comment");
+addSuperVar_float(&Sensor_Accelerometer_RelAzimuth,     "Sensor_Accelerometer_RelAzimuth", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Accelerometer_RelIncline,     "Sensor_Accelerometer_RelIncline", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Compass_X,     "Sensor_Compass_X", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Compass_Y,     "Sensor_Compass_Y", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Compass_Z,     "Sensor_Compass_Z", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Compass_FieldStrength,     "Sensor_Compass_FieldStrength", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Compass_NorthRelAzimuth,     "Sensor_Compass_NorthRelAzimuth", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Compass_NorthRel_Incline,     "Sensor_Compass_NorthRel_Incline", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Baro_psia,     "Sensor_Baro_psia", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Baro_altimeter,     "Sensor_Baro_altimeter", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Baro_temp,     "Sensor_Baro_temp", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Gyro_yawRate,     "Sensor_Gyro_yawRate", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Gyro_pitchRate,     "Sensor_Gyro_pitchRate", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Gyro_rollRate,     "Sensor_Gyro_rollRate", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Gyro_RelAzimuth,     "Sensor_Gyro_RelAzimuth", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Gyro_Rel_Incline,     "Sensor_Gyro_Rel_Incline", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Gyro_Rate,     "Sensor_Gyro_Rate", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&Sensor_GPS_IsAvailable,     "Sensor_GPS_IsAvailable", I2CSlow ,1,"units - comment");
+addSuperVar_ullint(&Sensor_GPS_Time,     "Sensor_GPS_Time", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_short_int(&Sensor_GPS_Altitude,     "Sensor_GPS_Altitude", I2CSlow ,1,"units - comment");
+addSuperVar_double(&Sensor_GPS_Lattitude,     "Sensor_GPS_Lattitude", I2CSlow ,1,"units - comment");
+addSuperVar_double(&Sensor_GPS_Longitude,     "Sensor_GPS_Longitude", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_GPS_Heading,     "Sensor_GPS_Heading", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_GPS_Speed,     "Sensor_GPS_Speed", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_GPS_Climbrate,     "Sensor_GPS_Climbrate", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Battery_ActualVoltage,     "Battery_ActualVoltage", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Battery_EffectiveVoltage,     "Battery_EffectiveVoltage", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Battery_PercentRemainingInstantaneous,     "Battery_PercentRemainingInstantaneous", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Battery_PercentRemainingFiltered,     "Battery_PercentRemainingFiltered", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Battery_batteryPercentPerMinute,     "Battery_batteryPercentPerMinute", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Battery_flightTimeRemaining,     "Battery_flightTimeRemaining", I2CSlow ,1,"units - comment");
+//intention_float(&lly blank
+addSuperVar_float(&throttleValues[0],     "throttleValues[0]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&throttleValues[1],     "throttleValues[1]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&throttleValues[2],     "throttleValues[2]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&throttleValues[3],     "throttleValues[3]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&throttleValues[4],     "throttleValues[4]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&throttleValues[5],     "throttleValues[5]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&throttleValues[6],     "throttleValues[6]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&secondsElapsed,     "secondsElapsed", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&AutoPilot_Enabled,     "AutoPilot_Enabled", I2CSlow   |                      UserEditable ,1,"units - comment");
+addSuperVar_unsigned_char(&UserInput_AutoClimb,     "UserInput_AutoClimb", I2CSlow ,1,"Bool - 0=Manual, 1=Assisted, 2=Fully Automatic(See desired Altitude)");
+addSuperVar_unsigned_char(&UserInput_AutoLateral,     "UserInput_AutoLateral", I2CSlow ,1,"Bool - ");
+addSuperVar_unsigned_char(&UserInput_AutoYaw,     "UserInput_AutoYaw", I2CSlow ,1,"Bool - ");
+addSuperVar_unsigned_char(&UserInput_ControlAzimuthIsHeliRelative,     "UserInput_ControlAzimuthIsHeliRelative", I2CSlow ,1,"Bool - This comes from the left joystick being pressed.");
+addSuperVar_unsigned_int(&paramSetChecksum_Flightboard,     "paramSetChecksum_Flightboard", I2CSlow ,1," - ");
+addSuperVar_unsigned_int(&counter_FB_mainLoop,     "counter_FB_mainLoop", I2CSlow ,1," - ");
+addSuperVar_unsigned_int(&counter_FB_push_1,     "counter_FB_push_1", I2CSlow ,1," - PushPolledVariables();");
+addSuperVar_unsigned_int(&counter_FB_push_2,     "counter_FB_push_2", I2CSlow ,1," - ");
+addSuperVar_unsigned_int(&counter_FB_push_3,     "counter_FB_push_3", I2CSlow ,1," - ");
+addSuperVar_unsigned_int(&counter_FB_get_1,     "counter_FB_get_1", I2CSlow ,1," - getFastVars(); ");
+addSuperVar_unsigned_int(&counter_FB_get_2,     "counter_FB_get_2", I2CSlow ,1," - getRetainVars();");
+addSuperVar_unsigned_int(&bufferVar_DoNotUse,     "bufferVar_DoNotUse", I2CSlow ,1," - ");
+addSuperVar_unsigned_short_int(&xx_VAR_ID_OF_HIGHEST_I2C_POLLED_VAR_xx,     "xx_VAR_ID_OF_HIGHEST_I2C_POLLED_VAR_xx", noFlags ,1,"units - comment");
+addSuperVar_unsigned_char(&I2C_Error,     "I2C_Error", noFlags ,1,"seconds - -1 for disabled");
+addSuperVar_unsigned_short_int(&I2C_PollingPeriodMsecs,     "I2C_PollingPeriodMsecs", noFlags ,1,"seconds - -1 for disabled");
+//intention_unsigned_char(&lly blank
+addSuperVar_unsigned_char(&ControllerInput[0],     "ControllerInput[0]", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_char(&ControllerInput[1],     "ControllerInput[1]", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_char(&ControllerInput[2],     "ControllerInput[2]", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_short_int(&ControllerInput_LT,     "ControllerInput_LT", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_short_int(&ControllerInput_RT,     "ControllerInput_RT", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_short_int(&ControllerInput_LJ_Mag,     "ControllerInput_LJ_Mag", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_short_int(&ControllerInput_LJ_Ang,     "ControllerInput_LJ_Ang", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_short_int(&ControllerInput_RJ_Mag,     "ControllerInput_RJ_Mag", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+addSuperVar_unsigned_short_int(&ControllerInput_RJ_Ang,     "ControllerInput_RJ_Ang", noFlags ,1,"units - This is the controller user input for I2C write to flightboard");
+//Used by f_(&ight algorithm and flight sim
+addSuperVar_float(&UserInput_DirectionStick_Mag,     "UserInput_DirectionStick_Mag", noFlags ,1,"units - comment");
+addSuperVar_float(&UserInput_DirectionStick_Azi,     "UserInput_DirectionStick_Azi", noFlags ,1,"units - comment");
+addSuperVar_float(&UserInput_Travel_Mag,     "UserInput_Travel_Mag", noFlags ,1,"units - comment");
+addSuperVar_float(&UserInput_Travel_Azi,     "UserInput_Travel_Azi", noFlags ,1,"units - comment");
+addSuperVar_float(&UserInput_ThrottleStick,     "UserInput_ThrottleStick", noFlags ,1,"units - comment");
+addSuperVar_float(&UserInput_ThrottleStickEnhanced,     "UserInput_ThrottleStickEnhanced", noFlags ,1,"units - comment");
+addSuperVar_float(&UserInput_Trigger_Right,     "UserInput_Trigger_Right", noFlags ,1,"units - comment");
+addSuperVar_float(&UserInput_Trigger_Left,     "UserInput_Trigger_Left", noFlags ,1,"units - comment");
+addSuperVar_unsigned_short_int(&AutoPilot_ConnectionStatusOfHeli,     "AutoPilot_ConnectionStatusOfHeli", noFlags ,0,"seconds - -1 for disabled");
+//Modes_(&!!br0ken!!
+addSuperVar_float(&AutoPilot_CommLoss_Delay_PositionHold,     "AutoPilot_CommLoss_Delay_PositionHold",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - -1 for disabled");
+addSuperVar_int(&AutoPilot_CommLoss_Delay_PositionHold_Enabled,     "AutoPilot_CommLoss_Delay_PositionHold_Enabled",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - -1 for disabled");
+addSuperVar_float(&AutoPilot_CommLoss_Delay_ReturnHome,     "AutoPilot_CommLoss_Delay_ReturnHome",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - -1 for disabled");
+addSuperVar_int(&AutoPilot_CommLoss_Delay_ReturnHome_Enabled,     "AutoPilot_CommLoss_Delay_ReturnHome_Enabled",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - -1 for disabled");
+addSuperVar_float(&AutoPilot_CommLoss_Delay_Land,     "AutoPilot_CommLoss_Delay_Land",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - -1 for disabled");
+addSuperVar_int(&AutoPilot_CommLoss_Delay_Land_Enabled,     "AutoPilot_CommLoss_Delay_Land_Enabled",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - -1 for disabled");
+addSuperVar_int(&AutoPilot_LowBatt_Percent_ReturnHome_AutoSetEnabled,     "AutoPilot_LowBatt_Percent_ReturnHome_AutoSetEnabled",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - -1 for disabled");
+addSuperVar_float(&AutoPilot_LowBatt_Percent_ReturnHome,     "AutoPilot_LowBatt_Percent_ReturnHome",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - Battery percent below which the autopilot will take the craft home.  (-1 for disabled)");
+addSuperVar_int(&AutoPilot_LowBatt_Percent_ReturnHome_Enabled,     "AutoPilot_LowBatt_Percent_ReturnHome_Enabled",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - Battery percent below which the autopilot will take the craft home.  (-1 for disabled)");
+addSuperVar_float(&AutoPilot_LowBatt_Percent_LandNow,     "AutoPilot_LowBatt_Percent_LandNow",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - Battery percentage below which the craft will land immediately.  (-1 for disabled)");
+addSuperVar_int(&AutoPilot_LowBatt_Percent_LandNow_Enabled,     "AutoPilot_LowBatt_Percent_LandNow_Enabled",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - Battery percentage below which the craft will land immediately.  (-1 for disabled)");
+addSuperVar_float(&AutoPilot_LowBatt_Percent_KillSystem,     "AutoPilot_LowBatt_Percent_KillSystem",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - Battery percentage below which the craft will land immediately.  (-1 for disabled)");
+addSuperVar_int(&AutoPilot_LowBatt_Percent_KillSystem_Enabled,     "AutoPilot_LowBatt_Percent_KillSystem_Enabled",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - Battery percentage below which the craft will land immediately.  (-1 for disabled)");
+addSuperVar_float(&AutoPilot_LowBatt_Percent_TimeDelay,     "AutoPilot_LowBatt_Percent_TimeDelay",                plsHandshk |UserEditable | defIsRetain ,0,"seconds - This is the time that batteryPercent must be below a threshold before that action occurs (return home, land here, etc.)");
+addSuperVar_float(&AutoPilot_ReturnHomeAltitudeAboveTakeoff,     "AutoPilot_ReturnHomeAltitudeAboveTakeoff",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&AutoPilot_ReturnHomeAltitudeObjectiveToleranceReqd,     "AutoPilot_ReturnHomeAltitudeObjectiveToleranceReqd",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&AutoPilot_distanceToNextWaypoint,     "AutoPilot_distanceToNextWaypoint", I2CSlow ,1,"units - comment");
+addSuperVar_float(&AutoPilot_distanceNeededToStopAircraft,     "AutoPilot_distanceNeededToStopAircraft",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&AutoPilot_wayPointDistanceTolerance,     "AutoPilot_wayPointDistanceTolerance",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&AutoPilot_MaxTransitSpeed,     "AutoPilot_MaxTransitSpeed",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&AutoPilot_descentRate,     "AutoPilot_descentRate",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_int(&AutoPilot_Step,     "AutoPilot_Step", I2CSlow ,1,"units - comment");
+addSuperVar_double(&AutoPilot_NextWayPoint_Latitude,     "AutoPilot_NextWayPoint_Latitude", I2CSlow ,1,"units - comment");
+addSuperVar_double(&AutoPilot_NextWayPoint_Longitude,     "AutoPilot_NextWayPoint_Longitude", I2CSlow ,1,"units - comment");
+addSuperVar_int(&GoBack_UserInput_AutoClimb,     "GoBack_UserInput_AutoClimb", I2CSlow ,1,"units - comment");
+addSuperVar_int(&GoBack_UserInput_AutoLateral,     "GoBack_UserInput_AutoLateral", I2CSlow ,1,"units - comment");
+addSuperVar_int(&GoBack_UserInput_AutoYaw,     "GoBack_UserInput_AutoYaw", I2CSlow ,1,"units - comment");
+//Position_(&!!br0ken!!
+addSuperVar_double(&Position_Latitude,     "Position_Latitude", I2CSlow ,1,"units - comment");
+addSuperVar_double(&Position_Longitude,     "Position_Longitude", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Position_Altitude,     "Position_Altitude", I2CSlow ,1,"units - comment");
+addSuperVar_double(&Position_Origin_Latitude,     "Position_Origin_Latitude",                plsHandshk |UserEditable | defIsRetain ,1,"units - comment");
+addSuperVar_double(&Position_Origin_Longitude,     "Position_Origin_Longitude",                plsHandshk |UserEditable | defIsRetain ,1,"units - comment");
+addSuperVar_float(&Position_Origin_Altitude,     "Position_Origin_Altitude",                plsHandshk |UserEditable | defIsRetain ,1,"units - comment");
+addSuperVar_float(&Position_DistanceFromOrigin_X,     "Position_DistanceFromOrigin_X", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Position_DistanceFromOrigin_Y,     "Position_DistanceFromOrigin_Y", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Position_FromOrigin_Distance,     "Position_FromOrigin_Distance", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Position_FromOrigin_Azimuth,     "Position_FromOrigin_Azimuth", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Position_FromOrigin_Altitude,     "Position_FromOrigin_Altitude", I2CSlow ,1,"units - comment");
+addSuperVar_int(&Position_CraftIsAirborne,     "Position_CraftIsAirborne", I2CSlow ,1,"units - comment");
+addSuperVar_float(&tooHigh,     "tooHigh", I2CSlow ,1,"units - comment");
+//Lateral_(&!!br0ken!!
+addSuperVar_float(&Motion_Lateral_EffectOf_P_Mag,     "Motion_Lateral_EffectOf_P_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_EffectOf_P_Azi,     "Motion_Lateral_EffectOf_P_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_EffectOf_I_Mag,     "Motion_Lateral_EffectOf_I_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_EffectOf_I_Azi,     "Motion_Lateral_EffectOf_I_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_EffectOf_D_Mag,     "Motion_Lateral_EffectOf_D_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_EffectOf_D_Azi,     "Motion_Lateral_EffectOf_D_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_VelocErr_Integrated_Mag,     "Motion_Lateral_VelocErr_Integrated_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_VelocErr_Integrated_Azi,     "Motion_Lateral_VelocErr_Integrated_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_VelocityError_Mag,     "Motion_Lateral_VelocityError_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_VelocityError_Azi,     "Motion_Lateral_VelocityError_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_VelocDesire_Mag,     "Motion_Lateral_VelocDesire_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_VelocDesire_Azi,     "Motion_Lateral_VelocDesire_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_Accelration_Mag,     "Motion_Lateral_Accelration_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_Accelration_Azi,     "Motion_Lateral_Accelration_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_Velocity_Mag,     "Motion_Lateral_Velocity_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Lateral_Velocity_Azi,     "Motion_Lateral_Velocity_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Desired_Mag,     "Motion_Tilt_Desired_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Desired_Azi,     "Motion_Tilt_Desired_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_EffectOf_P_Mag,     "Motion_Tilt_EffectOf_P_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_EffectOf_P_Azi,     "Motion_Tilt_EffectOf_P_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_EffectOf_D_Mag,     "Motion_Tilt_EffectOf_D_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_EffectOf_D_Azi,     "Motion_Tilt_EffectOf_D_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Error_Mag,     "Motion_Tilt_Error_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Error_Azi,     "Motion_Tilt_Error_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Velocity_Composite_Mag,     "Motion_Tilt_Velocity_Composite_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Velocity_Composite_Azi,     "Motion_Tilt_Velocity_Composite_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Velocity_Mems_Mag ,     "Motion_Tilt_Velocity_Mems_Mag ", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Velocity_Mems_Azi,     "Motion_Tilt_Velocity_Mems_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_TorqueNeeded_Mag,     "Motion_Tilt_TorqueNeeded_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_TorqueNeeded_Azi,     "Motion_Tilt_TorqueNeeded_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Actual_Mag,     "Motion_Tilt_Actual_Mag", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Tilt_Actual_Azi,     "Motion_Tilt_Actual_Azi", I2CSlow ,1,"units - comment");
+//Yaw_(&!!br0ken!!
+addSuperVar_float(&Motion_YawDesiredNoseAzimuth,     "Motion_YawDesiredNoseAzimuth",                            UserEditable ,1,"units - comment");
+addSuperVar_float(&Motion_NoseAzimuthError,     "Motion_NoseAzimuthError", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_YawNoseErrorP,     "Motion_YawNoseErrorP",                            UserEditable ,1,"units - comment");
+addSuperVar_float(&Motion_YawNoseErrorD,     "Motion_YawNoseErrorD",                            UserEditable ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_UserCommand,     "Motion_Yaw_UserCommand", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_MaxRateNoClimbEffect,     "Motion_Yaw_MaxRateNoClimbEffect", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_AircraftNose_Azi,     "Motion_Yaw_AircraftNose_Azi", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_Error_P,     "Motion_Yaw_Error_P", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_Error_I,     "Motion_Yaw_Error_I", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_Error_D,     "Motion_Yaw_Error_D", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_EffectOf_P,     "Motion_Yaw_EffectOf_P", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_EffectOf_I,     "Motion_Yaw_EffectOf_I", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_EffectOf_D,     "Motion_Yaw_EffectOf_D", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_Velocity,     "Motion_Yaw_Velocity", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_TorqueRequested,     "Motion_Yaw_TorqueRequested", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_VelocityRequested,     "Motion_Yaw_VelocityRequested", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_VelocityError,     "Motion_Yaw_VelocityError", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_Acceleration,     "Motion_Yaw_Acceleration", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_VelocityError_Integrated,     "Motion_Yaw_VelocityError_Integrated", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_VelocityDesired,     "Motion_Yaw_VelocityDesired", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Yaw_MaxYawRateDesired,     "Motion_Yaw_MaxYawRateDesired", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Composite_NoseAzimuth,     "Sensor_Composite_NoseAzimuth", I2CSlow ,1,"units - comment");
+//Vertical_(&!!br0ken!!
+addSuperVar_float(&Motion_DesiredAltitudeAboveSeaLevel,     "Motion_DesiredAltitudeAboveSeaLevel", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_DesiredAltitudeAboveTakeoff,     "Motion_DesiredAltitudeAboveTakeoff", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_AltitudeError,     "Motion_AltitudeError", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_AltitudeErrorP,     "Motion_AltitudeErrorP",                plsHandshk |UserEditable | defIsRetain ,1,"PID – P Setting - comment");
+addSuperVar_float(&Motion_ClimbRate_Actual,     "Motion_ClimbRate_Actual", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_ClimbRate_Desired,     "Motion_ClimbRate_Desired", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Climb_EffectOf_P,     "Motion_Climb_EffectOf_P", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Climb_EffectOf_I,     "Motion_Climb_EffectOf_I", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_Climb_EffectOf_D,     "Motion_Climb_EffectOf_D", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_climbRateErrorD,     "Motion_climbRateErrorD", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_climbAcceleration,     "Motion_climbAcceleration", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_climbRateError,     "Motion_climbRateError", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Motion_ClimbRateError_Integrated,     "Motion_ClimbRateError_Integrated", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Thrust_ThrottleSignal,     "Thrust_ThrottleSignal", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Thrust_MotorThrottleSummation,     "Thrust_MotorThrottleSummation", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Thrust_PredictedActual,     "Thrust_PredictedActual", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Thrust_Downward,     "Thrust_Downward", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Thrust_Lateral,     "Thrust_Lateral", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Characteristic_craftWeight,     "Characteristic_craftWeight",                          UserEditable | defIsRetain ,1,"units - comment");
+addSuperVar_float(&Characteristic_maxTiltForDesiredClimb,     "Characteristic_maxTiltForDesiredClimb", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Characteristic_maxTiltForZeroClimb,     "Characteristic_maxTiltForZeroClimb",                          UserEditable | defIsRetain ,1,"units - comment");
+addSuperVar_float(&Characteristic_topSpeed,     "Characteristic_topSpeed", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Characteristic_topSpeedZeroClimb,     "Characteristic_topSpeedZeroClimb",                          UserEditable | defIsRetain ,1,"units - comment");
+//Motors_(&!!br0ken!!
+//intention_float(&lly blank
+addSuperVar_float(&predictedActualThrust[0],     "predictedActualThrust[0]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&predictedActualThrust[1],     "predictedActualThrust[1]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&predictedActualThrust[2],     "predictedActualThrust[2]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&predictedActualThrust[3],     "predictedActualThrust[3]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&predictedActualThrust[4],     "predictedActualThrust[4]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&predictedActualThrust[5],     "predictedActualThrust[5]", I2CSlow ,1,"units - comment");
+addSuperVar_float(&predictedActualThrust[6],     "predictedActualThrust[6]", I2CSlow ,1,"units - comment");
+//intention_unsigned_char(&lly blank
+addSuperVar_unsigned_char(&motorFailureDetected[0],     "motorFailureDetected[0]", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&motorFailureDetected[1],     "motorFailureDetected[1]", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&motorFailureDetected[2],     "motorFailureDetected[2]", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&motorFailureDetected[3],     "motorFailureDetected[3]", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&motorFailureDetected[4],     "motorFailureDetected[4]", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&motorFailureDetected[5],     "motorFailureDetected[5]", I2CSlow ,1,"units - comment");
+addSuperVar_unsigned_char(&motorFailureDetected[6],     "motorFailureDetected[6]", I2CSlow ,1,"units - comment");
+//Sensors_(&!!br0ken!!
+addSuperVar_float(&Sensor_AccelerometerOrientationAccuracyMagnitude,     "Sensor_AccelerometerOrientationAccuracyMagnitude", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_AccelerometerOrientationRelAzimuth,     "Sensor_AccelerometerOrientationRelAzimuth", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_AccelerometerOrientationRel_Incline,     "Sensor_AccelerometerOrientationRel_Incline", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_AccelerometerAccelerationAccuracyMagnitude,     "Sensor_AccelerometerAccelerationAccuracyMagnitude", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_AccelerometerAccelerationRelAzimuth,     "Sensor_AccelerometerAccelerationRelAzimuth", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_AccelerometerAccelerationRelPitch,     "Sensor_AccelerometerAccelerationRelPitch", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_MagneticOrientationAccuracyMagnitude,     "Sensor_MagneticOrientationAccuracyMagnitude", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_MagneticOrientationTrueHeading,     "Sensor_MagneticOrientationTrueHeading", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_MagneticOrientationRollRelAzimuth,     "Sensor_MagneticOrientationRollRelAzimuth", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_MagneticOrientationRoll_Incline,     "Sensor_MagneticOrientationRoll_Incline", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Composite_Pitch,     "Sensor_Composite_Pitch", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Composite_Roll,     "Sensor_Composite_Roll", I2CSlow ,1,"units - comment");
+addSuperVar_float(&Sensor_Composite_Yaw,     "Sensor_Composite_Yaw", I2CSlow ,1,"units - comment");
+//Motion Ch_(&racteristics
+//Motion Ch_(&racteristics
+//Motion Ch_(&racteristics
+//Motion Ch_(&racteristics
+//Settings _(&nd Commands
+addSuperVar_float(&UserInput_Sensitivity_Throttle,     "UserInput_Sensitivity_Throttle",                plsHandshk |UserEditable | defIsRetain ,0," - I recommend setting this between 1 and 10.  Lower numbers are more sensitive.");
+addSuperVar_float(&UserInput_Sensitivity_DirectionStick,     "UserInput_Sensitivity_DirectionStick",                plsHandshk |UserEditable | defIsRetain ,0," - I recommend setting this between 1 and 10.  Lower numbers are more sensitive.");
+addSuperVar_float(&UserInput_Sensitivity_Yaw,     "UserInput_Sensitivity_Yaw",                plsHandshk |UserEditable | defIsRetain ,0," - I recommend setting this between 1 and 10.  Lower numbers are more sensitive.");
+addSuperVar_unsigned_char(&Command_PleaseReturnHome,     "Command_PleaseReturnHome",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - ");
+addSuperVar_unsigned_char(&Command_PleaseUnlockMotors,     "Command_PleaseUnlockMotors",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - ");
+addSuperVar_unsigned_char(&Command_PleaseMarkThisAsOrigin,     "Command_PleaseMarkThisAsOrigin",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - Increment this variable to make it happen");
+addSuperVar_float(&Setpoint_TransitHomeAltitudeAboveGround,     "Setpoint_TransitHomeAltitudeAboveGround",                plsHandshk |UserEditable | defIsRetain ,0," - I recommend setting this between 1 and 10.  Lower numbers are more sensitive.");
+addSuperVar_float(&Setpoint_Ceiling_SeaLevel,     "Setpoint_Ceiling_SeaLevel",                plsHandshk |UserEditable | defIsRetain ,0,"Feet - I recommend setting this between 1 and 10.  Lower numbers are more sensitive.");
+addSuperVar_float(&Setpoint_Ceiling_DistanceAboveTakeoff,     "Setpoint_Ceiling_DistanceAboveTakeoff",                plsHandshk |UserEditable | defIsRetain ,0,"Feet - I recommend setting this between 1 and 10.  Lower numbers are more sensitive.");
+//PID Value_(&
+addSuperVar_float(&Control_Lateral_P,     "Control_Lateral_P",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Roll control performs.");
+addSuperVar_float(&Control_Lateral_D,     "Control_Lateral_D",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Roll control performs.");
+addSuperVar_float(&Control_Lateral_I,     "Control_Lateral_I",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Roll control performs.");
+addSuperVar_float(&Control_Lateral_I_MaxWindup,     "Control_Lateral_I_MaxWindup",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Roll control performs.");
+addSuperVar_float(&Control_Lateral_TopSpeedCorrectionK,     "Control_Lateral_TopSpeedCorrectionK",                plsHandshk |UserEditable | defIsRetain ,0,"Setting this to greater than one is often necessary to allow it to fly at top speed - Changes how Roll control performs.");
+addSuperVar_float(&Control_Climb_P,     "Control_Climb_P",                plsHandshk |UserEditable | defIsRetain ,0," - This effects the way the helicopter controls altitude.");
+addSuperVar_float(&Control_Climb_D,     "Control_Climb_D",                plsHandshk |UserEditable | defIsRetain ,0," - This effects the way the helicopter controls altitude.");
+addSuperVar_float(&Control_Climb_I,     "Control_Climb_I",                plsHandshk |UserEditable | defIsRetain ,0," - This effects the way the helicopter controls altitude.");
+addSuperVar_float(&Control_Climb_I_MaxWindup,     "Control_Climb_I_MaxWindup",                plsHandshk |UserEditable | defIsRetain ,0," - This effects the way the helicopter controls altitude.");
+addSuperVar_float(&Control_Tilt_P,     "Control_Tilt_P",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Roll control performs.");
+addSuperVar_float(&Control_Tilt_D,     "Control_Tilt_D",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Roll control performs.");
+addSuperVar_unsigned_char(&Control_Tilt_PleaseUseGyroAndAccel,     "Control_Tilt_PleaseUseGyroAndAccel",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If true, orientation data from both the gyroscope and accelerometer will be used rather than just the accelerometer");
+addSuperVar_float(&Control_Yaw_P,     "Control_Yaw_P",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Yaw control performs");
+addSuperVar_float(&Control_Yaw_D,     "Control_Yaw_D",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Yaw control performs");
+addSuperVar_float(&Control_Yaw_I,     "Control_Yaw_I",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Yaw control performs");
+addSuperVar_float(&Control_Yaw_I_MaxWindup,     "Control_Yaw_I_MaxWindup",                plsHandshk |UserEditable | defIsRetain ,0," - Changes how Yaw control performs");
+addSuperVar_float(&Control_Yaw_MaxYawRateDesired,     "Control_Yaw_MaxYawRateDesired",                plsHandshk |UserEditable | defIsRetain ,0,"Rotations/Second - This is how responsive the heli's motors are assumed to be, (The time that the computer assumes it takes for thrust to reach 0.63 of the throttle value.)");
+//Aircraft _(&eometry
+addSuperVar_float(&motor_ResponseTC,     "motor_ResponseTC",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_unsigned_char(&numberOfMotors,     "numberOfMotors",                plsHandshk |UserEditable | defIsRetain ,0," - Number of motors on craft.  Set to 4 or 6");
+//intention_float(&lly blank
+addSuperVar_float(&angle_motor_[0],     "angle_motor_[0]",                plsHandshk |UserEditable | defIsRetain ,0,"Degrees - Clockwise from the top.  0 degrees is forward");
+addSuperVar_float(&angle_motor_[1],     "angle_motor_[1]",                plsHandshk |UserEditable | defIsRetain ,0,"Degrees - Clockwise from the top.  0 degrees is forward");
+addSuperVar_float(&angle_motor_[2],     "angle_motor_[2]",                plsHandshk |UserEditable | defIsRetain ,0,"Degrees - Clockwise from the top.  0 degrees is forward");
+addSuperVar_float(&angle_motor_[3],     "angle_motor_[3]",                plsHandshk |UserEditable | defIsRetain ,0,"Degrees - Clockwise from the top.  0 degrees is forward");
+addSuperVar_float(&angle_motor_[4],     "angle_motor_[4]",                plsHandshk |UserEditable | defIsRetain ,0,"Degrees - Clockwise from the top.  0 degrees is forward");
+addSuperVar_float(&angle_motor_[5],     "angle_motor_[5]",                plsHandshk |UserEditable | defIsRetain ,0,"Degrees - Clockwise from the top.  0 degrees is forward");
+addSuperVar_float(&angle_motor_[6],     "angle_motor_[6]",                plsHandshk |UserEditable | defIsRetain ,0,"Degrees - Clockwise from the top.  0 degrees is forward");
+//intention_unsigned_char(&lly blank
+addSuperVar_unsigned_char(&doesRotateClockwise_motor[0],     "doesRotateClockwise_motor[0]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&doesRotateClockwise_motor[1],     "doesRotateClockwise_motor[1]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&doesRotateClockwise_motor[2],     "doesRotateClockwise_motor[2]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&doesRotateClockwise_motor[3],     "doesRotateClockwise_motor[3]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&doesRotateClockwise_motor[4],     "doesRotateClockwise_motor[4]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&doesRotateClockwise_motor[5],     "doesRotateClockwise_motor[5]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&doesRotateClockwise_motor[6],     "doesRotateClockwise_motor[6]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+//intention_unsigned_char(&lly blank
+addSuperVar_unsigned_char(&simuMotorFailure[0],     "simuMotorFailure[0]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&simuMotorFailure[1],     "simuMotorFailure[1]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&simuMotorFailure[2],     "simuMotorFailure[2]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&simuMotorFailure[3],     "simuMotorFailure[3]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&simuMotorFailure[4],     "simuMotorFailure[4]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&simuMotorFailure[5],     "simuMotorFailure[5]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+addSuperVar_unsigned_char(&simuMotorFailure[6],     "simuMotorFailure[6]",                plsHandshk |UserEditable | defIsRetain ,0,"Bool - If, from the top the motor rotates clickwise, this is true, otherwise it is false.");
+//Simulated_(&Heli
+addSuperVar_unsigned_char(&simuHeli.hasAnimated,     "simuHeli.hasAnimated", I2CSlow ,1,"Bool - start stop and reset");
+addSuperVar_unsigned_char(&simuHeli.isAnimate,     "simuHeli.isAnimate", I2CSlow ,1,"Bool - start stop and reset");
+addSuperVar_unsigned_char(&freezeSimulatedHeli,     "freezeSimulatedHeli", I2CSlow ,1,"Bool - If set to 1 the simulated heli will only be able to roll and will have a fixed total throttle equaling 0.4. ");
+addSuperVar_float(&simuHeli.propAndMotorMass,     "simuHeli.propAndMotorMass",                plsHandshk |UserEditable | defIsRetain ,0,"lbs - ");
+addSuperVar_float(&simuHeli.CenterOfCraftMass,     "simuHeli.CenterOfCraftMass",                plsHandshk |UserEditable | defIsRetain ,0,"lbs - ");
+addSuperVar_float(&simuHeli.armLength,     "simuHeli.armLength",                plsHandshk |UserEditable | defIsRetain ,0,"inches - ");
+addSuperVar_float(&simuHeli.CenterOfCraftRadius,     "simuHeli.CenterOfCraftRadius",                plsHandshk |UserEditable | defIsRetain ,0,"inches - ");
+addSuperVar_float(&simuHeli.dragK_Linear,     "simuHeli.dragK_Linear",                plsHandshk |UserEditable | defIsRetain ,0," - ");
+addSuperVar_float(&simuHeli.dragK_Yaw,     "simuHeli.dragK_Yaw",                plsHandshk |UserEditable | defIsRetain ,0," - ");
+addSuperVar_float(&simuHeli.dragK_Roll,     "simuHeli.dragK_Roll",                plsHandshk |UserEditable | defIsRetain ,0," - ");
+addSuperVar_float(&simuHeli.MotorMaxThrust,     "simuHeli.MotorMaxThrust",                plsHandshk |UserEditable | defIsRetain ,0,"lbs - ");
+addSuperVar_float(&simuHeli.torqueK,     "simuHeli.torqueK",                plsHandshk |UserEditable | defIsRetain ,0,"ft*motorMaxThrust - ");
+addSuperVar_float(&simuHeli.maxWindSpeed,     "simuHeli.maxWindSpeed",                plsHandshk |UserEditable | defIsRetain ,0,"mph - ");
+addSuperVar_float(&simuHeli.turbulenceLevel,     "simuHeli.turbulenceLevel",                plsHandshk |UserEditable | defIsRetain ,0,"1 to 4 - ");
+//Instrumen_(&ation
+addSuperVar_float(&Sensor_FilterTimeConstantBarometer,     "Sensor_FilterTimeConstantBarometer",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_FilterTimeConstantAccelerometer,     "Sensor_FilterTimeConstantAccelerometer",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_FilterTimeConstantGyro,     "Sensor_FilterTimeConstantGyro",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_FilterTimeConstantCompass,     "Sensor_FilterTimeConstantCompass",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_FilterTimeConstantGPSHorizontal,     "Sensor_FilterTimeConstantGPSHorizontal",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_FilterTimeConstantGPSVertical,     "Sensor_FilterTimeConstantGPSVertical",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_FilterTimeConstantThrustMagnitudeChange,     "Sensor_FilterTimeConstantThrustMagnitudeChange",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_FilterTimeConstantBatteryPercent,     "Sensor_FilterTimeConstantBatteryPercent",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_memsZeroYawRate,     "Sensor_memsZeroYawRate",                plsHandshk |UserEditable | defIsRetain ,0,"Radians/Sec - ");
+addSuperVar_float(&Sensor_memsZeroRollRelAzimuth,     "Sensor_memsZeroRollRelAzimuth",                plsHandshk |UserEditable | defIsRetain ,0,"Radians - calculated before takeoff");
+addSuperVar_float(&Sensor_memsZeroRollRate,     "Sensor_memsZeroRollRate",                plsHandshk |UserEditable | defIsRetain ,0,"Radians/Sec - ");
+addSuperVar_float(&Sensor_declinationAbsAzimuth,     "Sensor_declinationAbsAzimuth",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Sensor_declinationAbsPitch,     "Sensor_declinationAbsPitch",                plsHandshk |UserEditable | defIsRetain ,0,"Seconds - ");
+addSuperVar_float(&Battery_MinCellvoltage,     "Battery_MinCellvoltage",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&Battery_MaxCellvoltage,     "Battery_MaxCellvoltage",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&Battery_VoltageDropFullThrottle,     "Battery_VoltageDropFullThrottle",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&Battery_PercentRemainingFilteringTC,     "Battery_PercentRemainingFilteringTC",                plsHandshk |UserEditable | defIsRetain ,0,"units - Seconds");
+addSuperVar_float(&Battery_flightTimeNeededToReachHome,     "Battery_flightTimeNeededToReachHome", I2CSlow ,1,"units - comment");
+addSuperVar_float(&testVariable1,     "testVariable1",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_double(&testVariable2,     "testVariable2",                plsHandshk |UserEditable | defIsRetain ,0,"units - comment");
+addSuperVar_float(&debugVar1,     "debugVar1", I2CSlow ,1,"units - comment");
+addSuperVar_float(&debugVar2,     "debugVar2", I2CSlow ,1,"units - comment");
+addSuperVar_float(&debugVar3,     "debugVar3", I2CSlow ,1,"units - comment");
+addSuperVar_float(&debugVar4,     "debugVar4", I2CSlow ,1,"units - comment");
+addSuperVar_float(&debugVar5,     "debugVar5", I2CSlow ,1,"units - comment");
+//Netowork _(&nd Debugging
+addSuperVar_unsigned_int(&paramSetVersion,     "paramSetVersion",                plsHandshk |UserEditable | defIsRetain ,0,"1=param's loaded - ");
+addSuperVar_unsigned_int(&paramSetChecksum,     "paramSetChecksum",                plsHandshk ,0," - ");
+addSuperVar_int(&HeartbeatInterval,     "HeartbeatInterval",                plsHandshk |UserEditable | defIsRetain ,0,"mSec - ");
+addSuperVar_int(&iControllerPacketInterval,     "iControllerPacketInterval",                plsHandshk |UserEditable | defIsRetain ,0,"mSec - ");
+//intention_ullint(&lly blank
+addSuperVar_ullint(&pollingInterval[1],     "pollingInterval[1]",                plsHandshk |UserEditable | defIsRetain ,0,"mSec - comment");
+addSuperVar_ullint(&pollingInterval[2],     "pollingInterval[2]",                plsHandshk |UserEditable | defIsRetain ,0,"mSec - comment");
+addSuperVar_int(&expectedPingForThisNetwork,     "expectedPingForThisNetwork", noFlags ,0,"mSec - ");
+addSuperVar_int(&enumIPAddressingMode,     "enumIPAddressingMode", noFlags ,0," - ");
+addSuperVar_int(&HelicopterMode,     "HelicopterMode",                             UserEditable | defIsRetain ,0,"1=yes - ");
+addSuperVar_QString(sTargetIPAddress,     "sTargetIPAddress",                             UserEditable | defIsRetain ,0," - ");
+addSuperVar_int(&savePolledVarsToDisk,     "savePolledVarsToDisk",                             UserEditable | defIsRetain ,0,"1=yes - ");
+addSuperVar_unsigned_char(&glbSystemID,     "glbSystemID",                             UserEditable | defIsRetain ,0," - ");
+}

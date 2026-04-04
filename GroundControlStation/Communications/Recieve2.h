@@ -1,0 +1,338 @@
+#ifndef RECIEVE2_H
+#define RECIEVE2_H
+
+#include "allFunctions.h"
+void I2CSuperVarWrite(varIDtype varID);
+
+
+extern int RowID[18];
+
+
+//***********************************
+//   process_ZPack_Acknowledgment
+//***********************************
+void MainWindow::process_ZPack_Acknowledgment(  QByteArray        &IncomingAck_Body,int BodyStart,
+                                                packetSeqType  incomingPacketSeqNum,
+                                                QHostAddress       IncomingReturnAddress){
+    UNUSED(incomingPacketSeqNum);
+    UNUSED(IncomingReturnAddress);
+    packetSeqType seqNumFromAckBody = (packetSeqType) QByteArray2lluint(IncomingAck_Body.mid(BodyStart, sizeof(packetSeqType)));
+    //*****COMPARE ACK with SENT PACKETS LOG
+    //packetSeqType ackCount_old[sentPacketLogLength];
+    for (int x=0; x < sentPacketLogLength; x++)
+        {
+        if  (sentPacketsLog[x].PacketSeqNum == seqNumFromAckBody)
+            {
+            lastAckRTT  = QDateTime::currentDateTime().toMSecsSinceEpoch() - sentPacketsLog[x].timeSent;
+            if (lastAckRTT > msecsToRememberSentPackets) lastAckRTT = averageRTT;    //disregard ignored packets from average
+            //Determine average RTT
+            static int      OLD_connectionStatus;
+            static ullint   uliPacketsReceived_WhenFirstconnected;
+            if ((connectionStatus > 0) && (OLD_connectionStatus<=0))     uliPacketsReceived_WhenFirstconnected = uliPacketsReceived;
+            if (abs((long int) (uliPacketsReceived-uliPacketsReceived_WhenFirstconnected)) < 35){
+                averageRTT = ((float) lastAckRTT) * (float)0.1 + ((float) averageRTT) * (float)0.9;
+            }else{
+                averageRTT = ((float) lastAckRTT) * (float)0.01 + ((float) averageRTT) * (float)0.99;
+                }
+            OLD_connectionStatus = connectionStatus;
+            //STRIKE PACKET FROM RECORD
+            sentPacketsLog[x]               = blankSentPacketLogEntry;
+            //sentPacketsLog[x].crucialPacket = 0;
+            //but detect dups
+            //ackCount_old[x] = sentPacketsLog[x].ackCount;
+            //sentPacketsLog[x].ackCount++;
+            //if ((!sentPacketsLog[x].ackCount) && (ackCount_old[x])) sentPacketsLog[x].ackCount--;
+            //break;  //FIXME - could cause a memory leak if bug exists
+            }
+        }
+    msecsRetyInterval = averageRTT * crucialRetransIntervalTimesRTT;
+    }
+
+
+//******************************************************************************************
+// ZPack_WriteSuperVar
+// ZPack_ReadResponse
+void MainWindow::process_ZPack_IncomingSuperVar(  QByteArray        &Buffer,int BodyStart, int packletSize, //incoming write request
+    packetSeqType  incomingPacketSeqNum,  QHostAddress       IncomingReturnAddress){
+    UNUSED(incomingPacketSeqNum);
+    UNUSED(IncomingReturnAddress);
+    QByteArray body = Buffer.mid(BodyStart,packletSize
+                                 - sizeof(packletSizeType)
+                                 //- sizeof(destCompType)
+                                 //- sizeof(sourceCompType)
+                                 - sizeof(MsgIDType));
+    QByteArray QByteArrayVarID    = body.left(sizeof(varIDtype));
+    QByteArray RemoteVal           = body.mid(sizeof(varIDtype));
+    varIDtype VarID = (varIDtype) QByteArray2lluint(QByteArrayVarID);
+    if (!HelicopterMode) setCachedValue3(VarID, RemoteVal);  //always record the remote value
+    if (getFlags(VarID) & plsHandshk){
+        if (HandshakeStep != 2) {       //normally we copy the remote value to the local value
+            setValue(VarID, RemoteVal);
+#ifdef TARGET_HARDWARE_PI
+//            qDebug() << "Sending Var to Flightboard VarID=" <<  VarID << getName(VarID);
+//            I2CSuperVarWrite(VarID);   //send new values to the flightboard
+#endif
+            }
+        else{                           //but during handshake step 2 we are simply comparing the values and looking for differences
+            QByteArray LocalVal = getValAsQByteArray(VarID);
+            if (LocalVal == RemoteVal)   VarHandshakeStatus[VarID] = 1;
+            else if (getType(VarID)== mac_float64){
+                if (fabs(((double) QByteArray2double(LocalVal) - QByteArray2double(RemoteVal))) < (double) 0.0000000001) VarHandshakeStatus[VarID] = 1;
+                }
+            else{
+                VarHandshakeStatus[VarID] = -1;
+                int moreRoomLeft = 1;
+                if (comparisonMismatchDetails.length() > 300) moreRoomLeft = 0;
+                if (moreRoomLeft == 1) {
+                    if (getName(VarID) =="paramSetChecksum"){
+                        qDebug() << "Program version incompatability with craft!\n\nComms are disabled.\n\n";
+                        comparisonMismatchDetails.append("Program version incompatability with craft!\n\nComms are disabled.\n\n");
+                        paramSetVersion = 0;
+                        }
+                    comparisonMismatchDetails.append(getName(VarID));
+                    comparisonMismatchDetails.append("\n\t Local     = " + getValAsString(VarID));
+                    comparisonMismatchDetails.append("\n\t Remote = ");
+                    }
+                //DISPLAY remote Values
+                short int variableType = getType(VarID);
+                if (variableType == mac_QString){
+                   if (moreRoomLeft == 1)   comparisonMismatchDetails.append(                                   QString::fromUtf8(RemoteVal));
+                }else if(variableType == mac_float64){
+                    if (fabs(QByteArray2double(RemoteVal) - QByteArray2double(getValAsQByteArray(VarID))) < pow((double)10,(double) -50)) {
+                       VarHandshakeStatus[VarID] = 1;
+                    }else{
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number(                   QByteArray2double(RemoteVal)));
+                    }
+                }else if(variableType == mac_float32){
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number(                   QByteArray2float (RemoteVal)));
+                }else if(variableType == mac_int32){
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number((int)              QByteArray2lluint(RemoteVal)));
+                }else if(variableType == mac_int16){
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number((short int)        QByteArray2lluint(RemoteVal)));
+                }else if(variableType == mac_uint64){
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number((ullint)           QByteArray2lluint(RemoteVal)));
+                }else if(variableType == mac_uint32){
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number((unsigned int)     QByteArray2lluint(RemoteVal)));
+                }else if(variableType == mac_uint16){
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number((usint)            QByteArray2lluint(RemoteVal)));
+                }else if(variableType == mac_uint8){
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append(QString::number((unsigned char)    QByteArray2lluint(RemoteVal)));
+                }
+                    if (moreRoomLeft == 1)  comparisonMismatchDetails.append("\n\n ");
+                //qDebug() << "****************************\ndetails=" <<comparisonMismatchDetails << "\n******************";
+                }
+            }
+        }
+    else{  //Always update from remote Value if it is a value that is not stored both places
+        setValue(VarID, RemoteVal);
+#ifdef TARGET_HARDWARE_PI
+//            qDebug() << "Sending Var to Flightboard VarID=" <<  VarID << getName(VarID);
+//        I2CSuperVarWrite(VarID);   //send new values to the flightboard
+#endif
+        }
+    }
+
+
+//******************************************************************************************
+void MainWindow::process_ZPack_ReadRequest(  QByteArray        &Buffer,int BodyStart, int packletSize, //incoming write request
+    packetSeqType  incomingPacketSeqNum, QHostAddress       IncomingReturnAddress){
+    UNUSED(incomingPacketSeqNum);
+    UNUSED(IncomingReturnAddress);
+    QByteArray body = Buffer.mid(BodyStart,packletSize
+                                 - sizeof(packletSizeType)
+                                 //- sizeof(destCompType)
+                                 //- sizeof(sourceCompType)
+                                 - sizeof(MsgIDType));
+    QByteArray QByteArrayVarID    = body.left(sizeof(varIDtype));
+    varIDtype         VarID       = (int) QByteArray2lluint(QByteArrayVarID);
+
+       // pushVarReadResponse(VarID);
+
+    //"uint8"   "uint16"    "uint32"    "uint64"    "int16"    "int32"   "float32"    "float64"  //"QString"
+        QHostAddress    qhaTargetIPAddress = QHostAddress(sTargetIPAddress);
+
+        if   (getType(VarID) == mac_float32){
+            if (getQbarrCache(VarID).length() != 0 && getCachedVal2As_float32(VarID) == getVal2As_float32(VarID)){
+                QByteArray packetBody;
+                packetBody.append(num2QByteArray(VarID));  packetBody.append(getQbarrCache(VarID));
+                addMsgToOutPacket(ZPack_ReadResponse,packetBody);
+            }else{
+                pushVarReadResponse(VarID);
+                setCachedValue2(VarID,     getVal2As_float32(VarID));
+                setQbarrCache  (VarID,     getValAsQByteArray(VarID));
+                }
+            }
+
+        /* THIS doesn't seem to improve performance
+        else if   (getType(VarID) == mac_float64){
+            if (getQbarrCache(VarID).length() != 0 && getCachedVal2As_float64(VarID) == getVal2As_float64(VarID)){
+                QByteArray packetBody;
+                packetBody.append(num2QByteArray(VarID));   packetBody.append(getQbarrCache(VarID));
+                addMsgToOutPacket(qhaTargetIPAddress,ZPack_ReadResponse,packetBody);
+            }else{
+                pushVarReadResponse(VarID);
+                setCachedValue2(VarID,     getVal2As_float64(VarID));
+                setQbarrCache  (VarID,     getValAsQByteArray(VarID));
+                }
+            }
+        else if   (getType(VarID) == mac_QString){
+            if (getQbarrCache(VarID).length() != 0 && getCachedVal2As_QString(VarID) == getVal2As_QString(VarID)){
+                QByteArray packetBody;
+                packetBody.append(num2QByteArray(VarID));  packetBody.append(getQbarrCache(VarID));
+                addMsgToOutPacket(qhaTargetIPAddress,ZPack_ReadResponse,packetBody);
+            }else{
+                pushVarReadResponse(VarID);
+                setCachedValue2(VarID,     getVal2As_QString(VarID));
+                setQbarrCache  (VarID,     getValAsQByteArray(VarID));
+                }
+            }  */
+        else{
+            pushVarReadResponse(VarID);
+            }
+
+
+
+
+    }
+
+//******************************************************************************************
+void MainWindow::process_ZPack_HeartBeat(  QByteArray        &Buffer,int BodyStart, int packletSize, //incoming write request
+    packetSeqType  incomingPacketSeqNum, QHostAddress       IncomingReturnAddress){
+    UNUSED(incomingPacketSeqNum);
+    UNUSED(IncomingReturnAddress);
+    QByteArray body = Buffer.mid(BodyStart,packletSize
+                                 - sizeof(packletSizeType)
+                                 //- sizeof(destCompType)
+                                 //- sizeof(sourceCompType)
+                                 - sizeof(MsgIDType));
+    //Do Nothing
+    }
+
+
+
+
+
+
+//***********************************
+//   process_ZPack_XBoxControllerWord
+//***********************************
+void MainWindow::process_ZPack_XBoxControllerWord(
+        QByteArray &Buffer, int bodyOffset,
+        packetSeqType     incomingPacketSeqNum,
+        QHostAddress      IncomingReturnAddress){
+    static QHostAddress      lastPacketAddress;
+    //Reject old packets
+    static packetSeqType highestReceived;
+    int IsNewPacket = 0;
+    if ((IncomingReturnAddress != lastPacketAddress) ||     //unless they are from a new host
+        (abs((long long int)(highestReceived-incomingPacketSeqNum))>10)){    //or seem excessively old
+        highestReceived = 0;
+        }
+    if (incomingPacketSeqNum > highestReceived){
+        highestReceived = incomingPacketSeqNum;
+        IsNewPacket = 1;
+        }
+    lastPacketAddress = IncomingReturnAddress;
+    /*
+    static int r;   r++;
+    qDebug() << "process_ZPack_XBoxControllerWord" << r
+             << "isNewPacket=" << IsNewPacket
+             << "highestReceived=" << highestReceived
+             << "incomingPacketSeqNum=" << incomingPacketSeqNum;
+    */
+    if (IsNewPacket){
+        CtrlRx1.LT =     (unsigned short int) QByteArray2lluint(Buffer.mid(bodyOffset + 3,2));
+        CtrlRx1.RT =     (unsigned short int) QByteArray2lluint(Buffer.mid(bodyOffset + 5,2));
+        CtrlRx1.LJ_Mag = (unsigned short int) QByteArray2lluint(Buffer.mid(bodyOffset + 7,2));
+        CtrlRx1.LJ_Ang = (unsigned short int) QByteArray2lluint(Buffer.mid(bodyOffset + 9,2));
+        CtrlRx1.RJ_Mag = (unsigned short int) QByteArray2lluint(Buffer.mid(bodyOffset + 11,2));
+        CtrlRx1.RJ_Ang = (unsigned short int) QByteArray2lluint(Buffer.mid(bodyOffset + 13,2));
+        CtrlRx1.A       = (1 && (0x80 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.B       = (1 && (0x40 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.X       = (1 && (0x20 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.Y       = (1 && (0x10 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.Back    = (1 && (0x08 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.Start   = (1 && (0x04 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.Guide   = (1 && (0x02 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.LJ      = (1 && (0x01 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 0,1))));
+        CtrlRx1.RJ      = (1 && (0x80 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 1,1))));
+        CtrlRx1.LB      = (1 && (0x40 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 1,1))));
+        CtrlRx1.RB      = (1 && (0x20 & (unsigned char) QByteArray2lluint(Buffer.mid(bodyOffset + 1,1))));
+        {int KPD_X = 0x03 & (char) QByteArray2lluint(Buffer.mid(bodyOffset + 2,1));
+        if (KPD_X == 0)       CtrlRx1.KPD_X = 0;
+        else if(KPD_X == 1)   CtrlRx1.KPD_X = 1;
+        else                  CtrlRx1.KPD_X = -1;}
+        {int KPD_Y = 0x03 & ((char) QByteArray2lluint(Buffer.mid(bodyOffset + 2,1))>>4);
+        if (KPD_Y == 0)       CtrlRx1.KPD_Y = 0;
+        else if(KPD_Y == 1)   CtrlRx1.KPD_Y = 1;
+        else                  CtrlRx1.KPD_Y = -1;}
+#ifdef TARGET_HARDWARE_PI
+//        //1.  set vars
+//        for (int x = 0; x < 3; x++){
+//            ControllerInput[x] = Buffer.at(bodyOffset + x);
+//            }
+//        ControllerInput_LT      = CtrlRx1.LT;
+//        ControllerInput_RT      = CtrlRx1.RT;
+//        ControllerInput_LJ_Mag  = CtrlRx1.LJ_Mag;
+//        ControllerInput_LJ_Ang  = CtrlRx1.LJ_Ang;
+//        ControllerInput_RJ_Mag  = CtrlRx1.RJ_Mag;
+//        ControllerInput_RJ_Ang  = CtrlRx1.RJ_Ang;
+//
+//
+//
+//
+//        //2.  push to fltbrd
+//        I2CSuperVarWrite(getVarID("ControllerInput[0]"));
+//        I2CSuperVarWrite(getVarID("ControllerInput[1]"));
+//        I2CSuperVarWrite(getVarID("ControllerInput[2]"));
+//        I2CSuperVarWrite(getVarID("ControllerInput_LT"));
+//        I2CSuperVarWrite(getVarID("ControllerInput_RT"));
+//        I2CSuperVarWrite(getVarID("ControllerInput_LJ_Mag"));
+//        I2CSuperVarWrite(getVarID("ControllerInput_LJ_Ang"));
+//        I2CSuperVarWrite(getVarID("ControllerInput_RJ_Mag"));
+//        I2CSuperVarWrite(getVarID("ControllerInput_RJ_Ang"));
+//
+//
+//
+//
+//        /*
+//         *
+//         *
+//ControllerInput_LT;
+//ControllerInput_RT;
+//ControllerInput_LJ_Mag;
+//ControllerInput_LJ_Ang;
+//ControllerInput_RJ_Mag;
+//ControllerInput_RJ_Ang;
+//
+//
+//
+//        UserInput_DirectionStick_Mag =  CtrlRx1.RJ_Mag;
+//        UserInput_DirectionStick_Azi =  CtrlRx1.RJ_Ang;
+//        UserInput_Travel_Mag;
+//        UserInput_Travel_Azi;
+//        UserInput_ThrottleStick;
+//        UserInput_ThrottleStickEnhanced;
+//        UserInput_Trigger_Right;
+//        UserInput_Trigger_Left;
+//        qDebug() << "Hello World!";
+//        I2CSuperVarWrite(getVarID("UserInput_Trigger_Left"));   //send new values to the flightboard
+//        */
+#endif
+/*
+     unsigned short int UserInput_DirectionStick_Mag;
+     unsigned short int UserInput_DirectionStick_Azi;
+     unsigned short int UserInput_Travel_Mag;
+     unsigned short int UserInput_Travel_Azi;
+     unsigned short int UserInput_ThrottleStick;
+     unsigned short int UserInput_ThrottleStickEnhanced;
+     unsigned short int UserInput_Trigger_Right;
+     unsigned short int UserInput_Trigger_Left;
+
+*/
+
+
+
+        }
+    }
+#endif // RECIEVE2_H

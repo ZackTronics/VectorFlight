@@ -1,0 +1,120 @@
+#ifndef UPDATEDISPLAY_H
+#define UPDATEDISPLAY_H
+#include <QPainter>
+#include <QElapsedTimer>
+#include <QDebug>
+/*
+#include "Mode_04_viewLogs.h"
+#include "Mode_03_viewRmtCtrlMode.h"
+#include "Mode_02_viewController.h"
+#include "Mode_01_calibrateController.h"
+#include "Mode_00_initialMode.h"
+*/
+
+extern int controllerConnected;
+
+#define EnterMode        0
+#define refreshDisplay   1
+#define resizeDisplay    2
+#define exitMode         3
+//Background Image Variable
+QImage backgroundImage(gWindowWidth, gWindowHeight, QImage::Format_RGB32);
+
+
+
+//**************************************************************************************************************************************************************************
+//The following functions apply to all modes
+//**************************************************************************************************************************************************************************
+
+///**********************************
+//  PERIODIC REFRESH
+//**********************************
+void MainWindow::updateDisplay()
+    {
+    static long int refreshCount;
+    refreshCount++;
+    //Initial Program Startup
+    if (refreshCount <= 1)  {
+        on_enteringInitialMode();
+        }
+    //Start timer to calculate renderTime of the periodic refresh
+    QElapsedTimer renderTimer;
+    renderTimer.start();
+    //every mode's slot needs to know about 3 different events.
+    //**********
+    //    1    *
+    //**********
+    //REFRESH THE DISPLAY BASED ON WHICH MODE WE ARE IN. (CALL THE APPROPRIATE ROUTINE)
+    //see UserInput-->Modes_and_Buttons.h AND updateDisplays-->Mode_XX_xxxxxx
+    if (gProgMode == num_calibrateMode)                     calibrateMode();
+    if (gProgMode == num_normalMode)                        normalMode();
+    if (gProgMode == num_viewControllerMode)                viewControllerMode();
+    if (gProgMode == num_viewRmtCtrlMode)                   viewRmtCtrlMode();
+    if (gProgMode == num_viewCommsLog)                      viewLogs(0);
+    if (gProgMode == num_viewEventLog)                      viewLogs(1);
+    if (gProgMode == num_viewHeliSimulationMode)            heliSimulationMode();
+    //Calculate new REFRESH RATE based on how long it took
+    int renderTime = renderTimer.elapsed();
+    if (renderTime <  15) if (timer3->interval() != 30)            timer3->setInterval(30);
+    if (renderTime >= 15) if (timer3->interval() != renderTime*2)  timer3->setInterval(renderTime *2);
+    //Draw the numbers accross the bottom of the screen in all modes
+    QPainter p;
+    p.begin(&backgroundImage);
+    p.setBrush(Qt::lightGray);
+    for (int x = 0; x < 7; x++){
+    p.drawRect( -10 + ((x + 0.5)*(gWindowWidth/7)),
+                -15 + gWindowHeight-35,
+                 20,
+                 20);}
+    p.end();
+    drawText(backgroundImage,11.5,"Normal","Verdana",Qt::AlignCenter,QPen(Qt::black),(0.5*(gWindowWidth/7)),gWindowHeight-35,"1");
+    drawText(backgroundImage,11.5,"Normal","Verdana",Qt::AlignCenter,QPen(Qt::black),(1.5*(gWindowWidth/7)),gWindowHeight-35,"2");
+    drawText(backgroundImage,11.5,"Normal","Verdana",Qt::AlignCenter,QPen(Qt::black),(2.5*(gWindowWidth/7)),gWindowHeight-35,"3");
+    drawText(backgroundImage,11.5,"Normal","Verdana",Qt::AlignCenter,QPen(Qt::black),(3.5*(gWindowWidth/7)),gWindowHeight-35,"4");
+    drawText(backgroundImage,11.5,"Normal","Verdana",Qt::AlignCenter,QPen(Qt::black),(4.5*(gWindowWidth/7)),gWindowHeight-35,"5");
+    drawText(backgroundImage,11.5,"Normal","Verdana",Qt::AlignCenter,QPen(Qt::black),(5.5*(gWindowWidth/7)),gWindowHeight-35,"6");
+    drawText(backgroundImage,11.5,"Normal","Verdana",Qt::AlignCenter,QPen(Qt::black),(6.5*(gWindowWidth/7)),gWindowHeight-35,"7");
+    //WRITE THE IMAGE onto the Background
+    ui->label_background->setPixmap(QPixmap::fromImage(backgroundImage));
+    }
+
+
+//**********************************
+//  RESIZE WINDOW
+//**********************************
+void MainWindow::resizeEvent(QResizeEvent *)
+    {
+    //Gets the window size and moves the background image to the bottom
+    gWindowWidth    = this->width();
+    gWindowHeight   = this->height() - 50;
+#ifdef TARGET_HARDWARE_PI
+//    gWindowWidth  = gWindowWidth / 3;
+//    gWindowHeight = gWindowHeight / 3;
+#endif
+    ui->label_background->setFixedSize(gWindowWidth, gWindowHeight);
+    ui->label_background->lower();
+    //resizes the background object
+    backgroundImage = QImage(gWindowWidth, gWindowHeight, QImage::Format_RGB32);
+    //resize the buttons accross the bottom
+    ui->pushButton_1->setGeometry  (0*(gWindowWidth / 7), gWindowHeight-30, gWindowWidth / 7,28);
+    ui->pushButton_2->setGeometry  (1*(gWindowWidth / 7), gWindowHeight-30, gWindowWidth / 7,28);
+    ui->pushButton_3->setGeometry  (2*(gWindowWidth / 7), gWindowHeight-30, gWindowWidth / 7,28);
+    ui->pushButton_4->setGeometry  (3*(gWindowWidth / 7), gWindowHeight-30, gWindowWidth / 7,28);
+    ui->pushButton_5->setGeometry  (4*(gWindowWidth / 7), gWindowHeight-30, gWindowWidth / 7,28);
+    ui->pushButton_6->setGeometry  (5*(gWindowWidth / 7), gWindowHeight-30, gWindowWidth / 7,28);
+    ui->pushButton_7->setGeometry  (6*(gWindowWidth / 7), gWindowHeight-30, gWindowWidth / 7,28);
+
+
+
+
+    //choppaGlWidget->resize(gWindowWidth-100,gWindowHeight-100);
+    //choppaGlWidget->setGeometry(0,0,gWindowWidth-100, gWindowHeight-100);
+
+    //QRect rect = this->geometry();
+
+  //  ui->verticalLayout->setGeometry(rect);
+
+    //qDebug() << "Resize";
+    };
+
+#endif // UPDATEDISPLAY_H

@@ -1,0 +1,292 @@
+#ifndef MENUBUTTONROW_H
+#define MENUBUTTONROW_H
+
+#include "Globals/globalDefines.h"
+#include "allFunctions.h"
+
+#include <QDesktopWidget>
+//#include "OpenGL/window.h"
+
+
+//**************************************************************
+//          TRIGGER the MODE CHANGES
+//
+//*************************************************************
+
+/*void MainWindow::cleanupModeChanges(){
+static int oldMode;
+if ((oldMode != gProgMode) && (oldMode == num_viewHeliSimulationMode)){
+    choppaGlWidget->setGeometry(1,1,1,1);
+    ui->verticalLayout->removeWidget( choppaGlWidget );
+    //   ui->verticalLayout->setEnabled(0);
+    //if ((oldMode != gProgMode) && (oldMode == num_viewHeliSimulationMode)) delete choppaGlWidget;
+}}
+oldMode = gProgMode;*/
+void MainWindow::on_actionHelicopter_Simulation_triggered(){
+//BEGIN_SWAP_PI
+//    
+//END_SWAP_PI
+//BEGIN_SWAP_DESK
+    menuNum = 1;
+    populateMenu();
+    gProgMode = num_viewHeliSimulationMode;
+    resetAnimatedHeli();
+    simuHeli.isAnimate = 1;
+    //choppaGlWidget->showMaximized();
+    choppaGlWidget->show();
+    choppaGlWidget->resize(1200,700);
+    //Window *window = new Window;
+    //window->showMinimized();
+
+    //choppaGlWidget->setGeometry(1,1,300,300);
+    //QRect rect = this->geometry();
+    //QRect rect = QRect (0,0,300,300);
+    //QSize rect = QSize (300,300);
+    //oppaGlWidget->setBaseSize(rect);
+      //  choppaGlWidget->resize(300,300);
+        //choppaGlWidget->setGeometry(200,200,200,200);
+    //ui->verticalLayout->setStretch(200,200);
+    //ui->verticalLayout->setGeometry(rect);
+    //    Window2 *window2 = new Window2;
+      //  window2->show();
+    //ui->verticalLayout->setEnabled(1);
+    //delete choppaGlWidget;
+    menuNum = 1;
+    populateMenu();
+//END_SWAP_DESK
+    }
+
+void ExitMode_01() {
+        Ctrl.calibMode                      = 0;
+        calibrationRoutineShare.calibStep   = 0;
+        gProgMode                           = num_normalMode;
+    }
+
+//Quit
+void MainWindow::on_actionQuit_triggered(){
+    QApplication::quit();
+    }
+//Mode 00 - Initial Mode
+void MainWindow::on_enteringInitialMode(){
+    on_action_Normal_Mode_triggered();
+    }
+void MainWindow::on_actionRe_Handshake_With_Chopper_triggered()
+    {
+    //qDebug() << "Re Handshake!";
+    InformUserOfHandshakeSuccess =1;
+    HandshakeStep =1;
+    }
+
+
+//**************************************************************
+//          THESE FUNCTIONS DEFINE THE ACTIONS THAT OCCUR WHEN
+//          THE BUTTONS ACCROSS THE BOTTOM OF THE SCREEN ARE CLICKED
+//*************************************************************
+void MainWindow::on_pushButton_1_clicked(){
+         if (menuNum == 200)                     {CtrlCalibShare  = EmptyStruct_CtrlCalibShare;}   //This is an empty controller structure with value=0 used to zero the controller structure
+    else if (menuNum == 400)                     {glbLogCanScroll[gProgMode - 1000] = !glbLogCanScroll[gProgMode - 1000];}
+    else if (menuNum == 1  )                     {menuNum = 2; populateMenu();}
+    else if (menuNum == 2  )                     {AutoPilot_Enabled = 0;pushSuperVarWrite("AutoPilot_Enabled"); releaseOutPacket(criticalPacket);}
+    else if (menuNum == 3  )                     {if (UserInput_AutoClimb) UserInput_AutoClimb = 0; else UserInput_AutoClimb = 1;
+                                                    if (connectionStatus>0)   {pushSuperVarWrite("UserInput_AutoClimb");
+                                                    releaseOutPacket(criticalPacket);}}
+    }
+void MainWindow::on_pushButton_2_clicked(){
+         if (menuNum == 400)                     {glbLogWriteToFile[gProgMode - 1000] = !glbLogWriteToFile[gProgMode - 1000];}
+    else if (menuNum == 1  )                     {menuNum = 3; populateMenu();}
+    else if (menuNum == 2  )                     {AutoPilot_Enabled = 1;pushSuperVarWrite("AutoPilot_Enabled"); releaseOutPacket(criticalPacket);}
+    else if (menuNum == 3  )                     {if (UserInput_AutoLateral) UserInput_AutoLateral = 0; else UserInput_AutoLateral = 1;
+                                                    if (connectionStatus>0)   {pushSuperVarWrite("UserInput_AutoLateral");
+                                                    releaseOutPacket(criticalPacket);}}
+    }
+void MainWindow::on_pushButton_3_clicked(){
+         if (menuNum == 2  )                     {AutoPilot_Enabled = 2;pushSuperVarWrite("AutoPilot_Enabled"); releaseOutPacket(criticalPacket);}
+    else if (menuNum == 3  )                     {if (UserInput_AutoYaw) UserInput_AutoYaw = 0;  else UserInput_AutoYaw = 1;
+                                                    if (connectionStatus>0)   {pushSuperVarWrite("UserInput_AutoYaw");
+                                                    releaseOutPacket(criticalPacket);}}
+    else if (menuNum ==1){
+
+             PleaseXmitChanges();
+
+
+
+             /*
+             qDebug() << "KILLLL";
+         //wipe the connection log if making a connection
+             for (int x = 0; x < sentPacketLogLength; x++){  //loop through every element of sent packet log
+//             sentPacketsLog[x]           = blankSentPacketLogEntry;
+             }  */
+         }
+
+    }
+void MainWindow::on_pushButton_4_clicked(){
+         if (menuNum == 2  )                     {AutoPilot_Enabled = 3;pushSuperVarWrite("AutoPilot_Enabled"); releaseOutPacket(criticalPacket);}
+    else if (menuNum == 3  )                     {if (UserInput_ControlAzimuthIsHeliRelative) UserInput_ControlAzimuthIsHeliRelative = 0; else UserInput_ControlAzimuthIsHeliRelative = 1;
+                                                    if (connectionStatus>0)   {pushSuperVarWrite("UserInput_ControlAzimuthIsHeliRelative");
+                                                    releaseOutPacket(criticalPacket);}}
+    }
+void MainWindow::on_pushButton_5_clicked(){
+         if (menuNum == 2  )                     {AutoPilot_Enabled = 4;pushSuperVarWrite("AutoPilot_Enabled"); releaseOutPacket(criticalPacket);}
+    else if (menuNum == 3  )                     {}
+    }
+void MainWindow::on_pushButton_6_clicked(){
+         if (menuNum == 2  )                     {AutoPilot_Enabled = 5;pushSuperVarWrite("AutoPilot_Enabled"); releaseOutPacket(criticalPacket);}
+    else if (menuNum == 3  )                     {}
+    }
+void MainWindow::on_pushButton_7_clicked(){
+    if (menuNum == 200)                     {on_enteringInitialMode();}
+    else if (menuNum == 500)                     {on_enteringInitialMode();}
+    else if (menuNum == 2  )                     {menuNum = 1; populateMenu();}
+    else if (menuNum == 3  )                     {menuNum = 1; populateMenu();}
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ui->pushButton_1  ->setText("Throttle");      ui->pushButton_1  ->setEnabled(TRUE);
+ui->pushButton_2  ->setText("Lateral");       ui->pushButton_2  ->setEnabled(TRUE);
+ui->pushButton_3  ->setText("Yaw");           ui->pushButton_3  ->setEnabled(TRUE);
+ui->pushButton_4  ->setText("View");          ui->pushButton_4  ->setEnabled(TRUE);
+*/
+
+
+void MainWindow::populateMenu(){
+    cleanupMenuButtons();
+    if (menuNum == 1)    {
+        ui->pushButton_1  ->setText("Autopilot");       ui->pushButton_1  ->setEnabled(TRUE);
+        ui->pushButton_2  ->setText("Controls");        ui->pushButton_2  ->setEnabled(TRUE);
+        ui->pushButton_3  ->setText("DBG TEST");         ui->pushButton_3  ->setEnabled(TRUE);
+        }
+    if (menuNum == 2)    {
+        ui->pushButton_1  ->setText("Manual");     ui->pushButton_1  ->setEnabled(TRUE);
+        ui->pushButton_2  ->setText("Home");       ui->pushButton_2  ->setEnabled(TRUE);
+        ui->pushButton_3  ->setText("Land");       ui->pushButton_3  ->setEnabled(TRUE);
+        ui->pushButton_4  ->setText("Hold");       ui->pushButton_4  ->setEnabled(TRUE);
+        ui->pushButton_5  ->setText("Up");         ui->pushButton_5  ->setEnabled(TRUE);
+        ui->pushButton_6  ->setText("Kill");       ui->pushButton_6  ->setEnabled(TRUE);
+        ui->pushButton_7  ->setText("Exit");       ui->pushButton_7  ->setEnabled(TRUE);
+        }
+    if (menuNum == 3)    {
+        ui->pushButton_1  ->setText("Throttle");      ui->pushButton_1  ->setEnabled(TRUE);
+        ui->pushButton_2  ->setText("Lateral");       ui->pushButton_2  ->setEnabled(TRUE);
+        ui->pushButton_3  ->setText("Yaw");           ui->pushButton_3  ->setEnabled(TRUE);
+        ui->pushButton_4  ->setText("View");          ui->pushButton_4  ->setEnabled(TRUE);
+        ui->pushButton_5  ->setText("");              ui->pushButton_5  ->setEnabled(TRUE);
+        ui->pushButton_6  ->setText("");              ui->pushButton_6  ->setEnabled(TRUE);
+        ui->pushButton_7  ->setText("Exit");          ui->pushButton_7  ->setEnabled(TRUE);
+        }
+    if (menuNum == 200)    {
+        ui->pushButton_1  ->setText("Autopilot");
+        ui->pushButton_1  ->setEnabled(TRUE);
+        ui->pushButton_2  ->setText("Controls");
+        ui->pushButton_2  ->setEnabled(TRUE);
+        }
+     if (menuNum == 300)    {
+        ui->pushButton_7  ->setText("Exit");
+        ui->pushButton_7  ->setEnabled(TRUE);
+        }
+     if (menuNum == 400)    {
+        ui->pushButton_1  ->setEnabled(TRUE);
+        ui->pushButton_2  ->setEnabled(TRUE);
+        }
+     if (menuNum == 500)    {
+        }
+
+    }
+void MainWindow::cleanupMenuButtons(){
+    ui->pushButton_1->setEnabled(FALSE);
+    ui->pushButton_2->setEnabled(FALSE);
+    ui->pushButton_3->setEnabled(FALSE);
+    ui->pushButton_4->setEnabled(FALSE);
+    ui->pushButton_5->setEnabled(FALSE);
+    ui->pushButton_6->setEnabled(FALSE);
+    ui->pushButton_7->setEnabled(FALSE);
+    ui->pushButton_1->setText("B1");
+    ui->pushButton_2->setText("B2");
+    ui->pushButton_3->setText("B3");
+    ui->pushButton_4->setText("B4");
+    ui->pushButton_5->setText("B5");
+    ui->pushButton_6->setText("B6");
+    ui->pushButton_7->setText("B7");
+    }
+
+
+//Go to Normal Mode
+void MainWindow::on_action_Normal_Mode_triggered(){
+    gProgMode = num_normalMode;
+    menuNum = 1;
+    populateMenu();
+    }
+//Mode 01 - Calibrate Mode
+void MainWindow::on_actionCalibrate_Controller_triggered()  {
+    gProgMode                           = num_calibrateMode;    //there is only one controller.  This is the program calibrate mode.
+    Ctrl.calibMode                      = 1;                    //sets the particular controller object's function into calibrate mode
+    calibrationRoutineShare.calibStep   = 0;                    //find zero position
+    menuNum = 200;
+    populateMenu();
+    }
+//Mode 02 - View Controller mode
+void MainWindow::on_actionView_Controller_triggered(){
+    gProgMode = num_viewControllerMode;
+    menuNum = 300;
+    populateMenu();
+    }
+void MainWindow::on_actionDBG_See_Rmote_Controller_triggered(){
+    gProgMode = num_viewRmtCtrlMode;
+    menuNum = 500;
+    populateMenu();
+
+    }
+//Mode 04
+void MainWindow::on_actionView_Comms_Log_2_triggered(){
+    gProgMode = num_viewCommsLog;
+    glbLogCanScroll[defCommsLog]  = 1;  //default is 0 to minimize CPU load
+    menuNum = 400;
+    populateMenu();
+    //The text on these buttons is updated in realtime in Display-->Mode_04_viewCommsLog.h
+    }
+//Mode 05
+void MainWindow::on_actionView_Events_Log_triggered(){
+    gProgMode = num_viewEventLog;
+    glbLogCanScroll[defEventLog]  = 1;  //default is 0 to minimize CPU load
+    menuNum = 400;
+    populateMenu();
+    //These text on these buttons is updated in realtime in Display-->Mode_04_viewCommsLog.h
+    }
+
+
+
+
+//Enable Logging
+void MainWindow::on_actionEnable_Advanced_Logging_triggered()
+{
+    savePolledVarsToDisk = 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+#endif // MENUBUTTONROW_H

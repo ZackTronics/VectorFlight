@@ -1,0 +1,14 @@
+Ctrl.LJ_X_Offset		=948
+Ctrl.LJ_Y_Offset		=-1953
+Ctrl.LT_Offset		=0
+Ctrl.RJ_X_Offset		=-979
+Ctrl.RJ_Y_Offset		=-2444
+Ctrl.RT_Offset		=0
+CtrlCalibShare.LJ_Offset_Mag		=2170
+CtrlCalibShare.LJ_Offset_Ang		=2059
+CtrlCalibShare.RJ_Offset_Mag		=2632
+CtrlCalibShare.RJ_Offset_Ang		=1581
+iControllerPacketInterval		=50
+enumIPAddressingMode		=0
+systemID		=11
+sTargetIPAddress		=192.168.117.2
