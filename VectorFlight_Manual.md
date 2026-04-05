@@ -500,8 +500,8 @@ To ensure the highest reliability, perform the following maintenance before each
 ## Chapter 9: Dual-Headed Simulation Setup 
 
 ### 9.1 Concept: Distributed Processing 
-The "Dual-Headed" configuration is the most powerful way to utilize Pegasus Control. 
-By splitting the processing across two computers, the system ensures that the high-frequency polling of the Xbox controller and Ground Control Station (GCS) telemetry does not compete for CPU cycles with the intense OpenGL 3D rendering and physics integration. 
+The "Dual-Headed" configuration is the most powerful way to easily demonstrate Pegasus Control with minimal hardware.
+Only two computers are required to do this.  
 In this setup: 
 * Computer A (Controller PC): Acts as the GCS and Pilot Interface. 
 * Computer B (Simulation PC): Acts as the virtual aircraft (Serving Helicopter). 
