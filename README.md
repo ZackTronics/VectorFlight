@@ -9,8 +9,8 @@ The architecture is built for **parity**: the same C++ codebase can run as a gra
 
 ## 📖 Documentation
 Full Documentation Available here:<br>
-[**VectorFlight - Pegasus - Manual.md** (or .docx)](https://github.com/ZackTronics/VectorFlight/blob/main/VectorFlight%20-%20Pegasus%20-%20Manual.docx) <br>
-
+[**VectorFlight - Pegasus - Manual.md** (or .docx)](https://github.com/ZackTronics/VectorFlight/blob/main/VectorFlight_Manual.md) <br>
+                                                    
 
 (See Also):<br>
 [https://zacktronics.com/](https://zacktronics.com/)
