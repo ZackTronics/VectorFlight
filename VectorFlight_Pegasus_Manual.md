@@ -11,6 +11,21 @@ Whether this suite is utilized as a high-fidelity simulator for pilot training o
 > While the instructions and technical details are derived directly from the Pegasus source code, users should exercise standard engineering caution when applying these configurations to physical flight hardware. 
 > Always verify safety-critical parameters—such as battery voltage cutoffs and RTH altitudes—in a controlled environment. 
 
+
+## Contents
+* [Introduction: The Pegasus Philosophy](#introduction-the-pegasus-philosophy)
+* [Chapter 0: Quick Start (Loopback Demo)](#chapter-0-quick-start-loopback-demo)
+* [Chapter 1: System Overview](#chapter-1-system-overview)
+* [Chapter 2: Installation & Prerequisites](#chapter-2-installation--prerequisites)
+* [Chapter 3: Networking & Connectivity](#chapter-3-networking--connectivity)
+* [Chapter 4: The Handshake & Variable Synchronization](#chapter-4-the-handshake--variable-synchronization)
+* [Chapter 5: Controller Configuration](#chapter-5-controller-configuration)
+* [Chapter 6: Flight Simulation & Graphics](#chapter-6-flight-simulation--graphics)
+* [Chapter 7: Autopilot & Safety Logic](#chapter-7-autopilot--safety-logic)
+* [Chapter 8: Maintenance & Diagnostics](#chapter-8-maintenance--diagnostics)
+* [Chapter 9: Dual-Headed Simulation Setup](#chapter-9-dual-headed-simulation-setup)
+
+
 ## Chapter 0: Quick Start (Loopback Demo) 
 For the most straightforward introduction to the system, you can run a "Loopback" simulation where the Ground Control interface and the 3D OpenGL renderer run on the same machine. 
 
