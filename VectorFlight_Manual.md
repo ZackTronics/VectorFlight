@@ -1,10 +1,10 @@
 # VectorFlight - Pegasus - Control System 
-**Zackery Sobin** 
-
-## Introduction: The Pegasus Philosophy 
+**Zackery Sobin** ## Introduction: The Pegasus Philosophy 
 The VectorFlight Pegasus Control System was developed with an ambitious engineering goal: to create a flight control architecture that operates identically whether it is flying a virtual drone in a 3D environment or a physical aircraft in the field. 
 By using a "single source of truth" via the SuperVar framework, Pegasus allows for the seamless iteration of complex flight dynamics, autopilot logic, and sensor filtering on a desktop PC, which can then be deployed to a Raspberry Pi or microcontroller target without rewriting the core engine. 
+
 Whether this suite is utilized as a high-fidelity simulator for pilot training or as the primary flight-brain for a custom multi-rotor, this manual provides the technical roadmap for configuration, networking, and flight operations. 
+
 > Note on this Documentation: This manual was developed with the assistance of an AI collaborator (Gemini). 
 > While the instructions and technical details are derived directly from the Pegasus source code, users should exercise standard engineering caution when applying these configurations to physical flight hardware. 
 > Always verify safety-critical parameters—such as battery voltage cutoffs and RTH altitudes—in a controlled environment. 
@@ -105,25 +105,23 @@ Whether this suite is utilized as a high-fidelity simulator for pilot training o
 For the most straightforward introduction to the system, you can run a "Loopback" simulation where the Ground Control interface and the 3D OpenGL renderer run on the same machine. 
 
 ### 0.1 Opening the Project 
-Launch Qt Creator. 
-Open the SendingUnit.pro project file. 
-Select a valid kit (e.g., Desktop Qt 5.5.1 MSVC2010 32-bit). 
+1. Launch Qt Creator. 
+2. Open the SendingUnit.pro project file. 
+3. Select a valid kit (e.g., Desktop Qt 5.5.1 MSVC2010 32-bit). 
 
 ### 0.2 Initial Build and Directory Setup 
-Click Run (or press Ctrl+R). 
-The program will initialize but may complain about missing OpenGL models or settings. 
-Deploy Assets: You must manually copy your asset folders into the build directory created by Qt Creator (e.g., build-SendingUnit-Desktop_Qt_5_5_1_MSVC2010_32bit-Debug/). 
-Copy the "models" folder into the build directory. 
-Copy the "ProgramData" folder (or the retainData.stz settings file) into the build directory. 
-Restart: Run the program again. It should now load the 3D environment and the default parameter set without errors. 
+1. Click Run (or press Ctrl+R). 
+2. The program will initialize but may complain about missing OpenGL models or settings. 
+3. Deploy Assets: You must manually copy your asset folders into the build directory created by Qt Creator (e.g., build-SendingUnit-Desktop_Qt_5_5_1_MSVC2010_32bit-Debug/). 
+4. Copy the "models" folder into the build directory. 
+5. Copy the "ProgramData" folder (or the retainData.stz settings file) into the build directory. 
+6. Restart: Run the program again. It should now load the 3D environment and the default parameter set without errors. 
 
 ### 0.3 Running the Simulation 
-Plug in an Xbox Controller: Ensure it is recognized by the OS before proceeding. 
-Configure Role: Go to Parameters > Communication Settings and ensure the system is set to Serving Helicopter. 
-Enter Simulation: Go to Main Display > Helicopter Simulation. 
-Begin: Move the sticks on your controller to see the 3D drone respond in real-time via the loopback network. 
-adadf 
-adfadf 
+1. Plug in an Xbox Controller: Ensure it is recognized by the OS before proceeding. 
+2. Configure Role: Go to Parameters > Communication Settings and ensure the system is set to Serving Helicopter. 
+3. Enter Simulation: Go to Main Display > Helicopter Simulation. 
+4. Begin: Move the sticks on your controller to see the 3D drone respond in real-time via the loopback network. 
 
 ## Chapter 1: System Overview 
 
@@ -136,6 +134,7 @@ It allows an engineer to run a high-fidelity 3D simulation on a desktop environm
 The system architecture is designed for "Hardware-in-the-Loop" testing. In this ecosystem, the software can function in two distinct capacities: 
 * The Desktop Simulator: Provides a full OpenGL-based 3D viewport for visual testing of flight dynamics, allowing for the safe iteration of PID loops and failsafe logic without risking physical hardware. 
 * The Flight Controller (Target Hardware): When compiled for target hardware (like a Raspberry Pi or MCU), the core physics and control loops run in real-time, interfacing with physical sensors via the I2C bus. 
+
 In both scenarios, the desktop version of the software acts as the Ground Control Station (GCS), providing a graphical interface to monitor telemetry and modify system behavior on the fly. 
 
 ### 1.3 The "SuperVar" Framework 
@@ -148,20 +147,20 @@ This ensures that the Ground Station and the Flight Controller are always synchr
 ### 1.4 Communication Architecture 
 The system utilizes a custom UDP-based protocol over Port 12346 to facilitate low-latency communication. 
 Because flight stability depends on timing, the protocol is optimized for speed while maintaining reliability for critical configuration data: 
-* Real-Time Data (Non-Critical): High-speed telemetry and joystick inputs are transmitted via "best-effort" UDP packets. 
-This minimizes lag, ensuring that the latest stick position is always prioritized. 
-* Configuration Data (Critical): Changes to SuperVars and system handshakes require explicit acknowledgments (ACKs). 
-If the MCU or Simulation target does not confirm receipt of a critical parameter, the GCS will automatically retransmit the data based on the calculated Round Trip Time (RTT). 
+* Real-Time Data (Non-Critical): High-speed telemetry and joystick inputs are transmitted via "best-effort" UDP packets. This minimizes lag, ensuring that the latest stick position is always prioritized. 
+* Configuration Data (Critical): Changes to SuperVars and system handshakes require explicit acknowledgments (ACKs). If the MCU or Simulation target does not confirm receipt of a critical parameter, the GCS will automatically retransmit the data based on the calculated Round Trip Time (RTT). 
 
 ### 1.5 System Roles 
 To facilitate this networked environment, the software utilizes a role-based configuration: 
 * Client Computer (GCS): The primary pilot interface. It captures Xbox controller input, manages the master list of SuperVars, and displays telemetry logs. 
 * Serving Helicopter (Sim or MCU): The "Flight Intelligence." It receives control words, executes the physics/PID loops, and drives the output—either to an OpenGL renderer or to physical ESCs (Electronic Speed Controllers) on an aircraft. 
+
 By maintaining the same code footprint across desktop and embedded targets, Pegasus Control allows for a seamless transition from a virtual quadcopter on a screen to a physical aircraft in the field. 
 
 ## Chapter 2: Installation & Prerequisites 
 
 ### 2.1 Software Requirements 
+
 #### 2.1.1 Qt Framework 
 The system is built using the Qt Framework. To compile the project, the following modules must be installed via the Qt Maintenance Tool: 
 * Core, GUI, and Widgets: Required for the primary interface, window management, and core logic. 
@@ -169,23 +168,20 @@ The system is built using the Qt Framework. To compile the project, the followin
 * OpenGL & Multimedia (Desktop only): Required for the 3D rendering engine and visual simulation. 
 
 #### 2.1.2 Development Environment 
-* Windows: Compiling for Windows requires a C++ compiler such as MSVC (Microsoft Visual C++). 
-The integration with Xbox controllers relies on the XInput library. 
-If you encounter errors regarding XINPUT9_1_0.dll, install the DirectX End-User Runtimes. 
+* Windows: Compiling for Windows requires a C++ compiler such as MSVC (Microsoft Visual C++). The integration with Xbox controllers relies on the XInput library. If you encounter errors regarding XINPUT9_1_0.dll, install the DirectX End-User Runtimes. 
 * Linux / Raspberry Pi: Compiling for Linux or the Raspberry Pi target requires standard GCC build tools. 
 
 ### 2.2 Hardware Setup 
+
 #### 2.2.1 Pilot Interface (Xbox Controller) 
 The system is optimized for an Xbox 360 or compatible controller to serve as the pilot's input device. 
 * Connection: Connect the controller to the computer designated as the Ground Control Station (GCS). 
-* Detection: The software automatically attempts to acquire the controller on startup. 
-If the controller is disconnected or not recognized, a "Controller NOT Connected" warning will appear in the primary viewport. 
+* Detection: The software automatically attempts to acquire the controller on startup. If the controller is disconnected or not recognized, a "Controller NOT Connected" warning will appear in the primary viewport. 
 * Calibration: Proper operation requires an initial calibration to define stick centers and deadzones, which are stored in the local settings file. 
 
 #### 2.2.2 Flight Controller (Raspberry Pi / Microcontroller Target) 
 When the software is deployed to a Raspberry Pi or similar target to act as a physical flight controller, additional hardware configuration is required: 
-* I2C Configuration: The target must have I2C communication enabled to interface with flight sensors (accelerometers, gyros, etc.). 
-This typically involves installing i2c-tools and loading the necessary kernel modules (i2c-dev). 
+* I2C Configuration: The target must have I2C communication enabled to interface with flight sensors (accelerometers, gyros, etc.). This typically involves installing i2c-tools and loading the necessary kernel modules (i2c-dev). 
 * Permissions: The user account running the software must have permissions to access I2C devices, often managed through udev rules (e.g., setting MODE="0666" for I2C devices). 
 
 ### 2.3 Project Compilation 
@@ -194,22 +190,21 @@ This file contains a configuration switch that determines whether the resulting 
 
 #### 2.3.1 Building for Desktop (Default) 
 To build the Ground Control Station or the 3D Simulator: 
-* Open the project in Qt Creator. 
-* Ensure the CONFIG += pi_target line in the .pro file is commented out. 
-* Build the project. This configuration includes all OpenGL rendering libraries and desktop-specific joystick polling logic. 
+1. Open the project in Qt Creator. 
+2. Ensure the CONFIG += pi_target line in the .pro file is commented out. 
+3. Build the project. This configuration includes all OpenGL rendering libraries and desktop-specific joystick polling logic. 
 
 #### 2.3.2 Building for Raspberry Pi / MCU 
 To build the executable for an embedded flight controller: 
-* Uncomment the line # CONFIG += pi_target in the .pro file. 
-* This defines the TARGET_HARDWARE_PI macro. This flag strips away the 3D rendering code and UI dependencies to minimize the footprint. 
-* It activates the I2C sensor communication modules and Linux-specific hardware polling. 
+1. Uncomment the line # CONFIG += pi_target in the .pro file. 
+2. This defines the TARGET_HARDWARE_PI macro. This flag strips away the 3D rendering code and UI dependencies to minimize the footprint. 
+3. It activates the I2C sensor communication modules and Linux-specific hardware polling. 
 
 ### 2.4 Data Persistence and Directory Structure 
 The application requires a specific directory structure to manage settings and logs. 
 Ensure the following folder exists in the same directory as the executable: 
 * ./ProgramData/: This folder is used to store telemetry logs (commsLog.txt, eventLog.txt) and persistent settings. 
-* retainData.stz: This file contains the synchronized SuperVar states. It is loaded automatically on startup. 
-If it is missing, the system will prompt you to select a parameter set to initialize the simulation variables. 
+* retainData.stz: This file contains the synchronized SuperVar states. It is loaded automatically on startup. If it is missing, the system will prompt you to select a parameter set to initialize the simulation variables. 
 
 ## Chapter 3: Networking & Connectivity 
 
@@ -233,8 +228,7 @@ In this role, the application acts as the "Server," whether it is a 3D simulatio
 This role serves as the pilot's primary interface. 
 * Function: Captures controller inputs and manages the master "SuperVar" list. 
 * Identity: Assigned a Component ID of ControlLaptop (0x01). 
-* Peer Addressing: Requires the IPv4 or IPv6 address of the target. 
-For internal testing on a single machine, the loopback address (127.0.0.1) is supported. 
+* Peer Addressing: Requires the IPv4 or IPv6 address of the target. For internal testing on a single machine, the loopback address (127.0.0.1) is supported. 
 
 ### 3.3 Network Performance & Latency 
 To maintain flight safety, the system provides a dedicated Communication Statistics interface to monitor the health of the data link in real-time. 
@@ -243,23 +237,18 @@ To maintain flight safety, the system provides a dedicated Communication Statist
 For "Crucial" packets (such as variable updates or handshakes), the system expects an explicit acknowledgment (ACK). 
 The time elapsed between sending the packet and receiving the ACK is recorded as the RTT. 
 * Average RTT: A smoothed value used to distinguish between temporary jitter and sustained network congestion. 
-* Ping Baseline: Users can "Reset" the baseline once a stable connection is established. 
-The Autopilot logic uses this baseline to detect communication degradation; 
-if latency spikes significantly above this value, the system may automatically initiate a "Comms Loss" failsafe (e.g., Position Hold or Return to Home). 
+* Ping Baseline: Users can "Reset" the baseline once a stable connection is established. The Autopilot logic uses this baseline to detect communication degradation; if latency spikes significantly above this value, the system may automatically initiate a "Comms Loss" failsafe (e.g., Position Hold or Return to Home). 
 
 #### 3.3.2 Packet Integrity and Error Tracking 
 The system monitors for three specific types of network errors to prevent corrupted data from affecting flight: 
-* CRC Errors: Triggered when the 16-bit Cyclic Redundancy Check in the packet footer does not match the calculated value. 
-This is often a sign of electrical interference on a wireless link or a software version mismatch. 
+* CRC Errors: Triggered when the 16-bit Cyclic Redundancy Check in the packet footer does not match the calculated value. This is often a sign of electrical interference on a wireless link or a software version mismatch. 
 * Bad Length: Occurs if the physical size of the received packet does not match the packletSize declared in its header. 
 * Stub Packets: Small fragments or incomplete headers that are discarded by the listener. 
 
 ### 3.4 Data Transmission Control 
 Within the Communication Settings, users can fine-tune the network load: 
-* Packet Intervals: The frequency at which the GCS polls for the Xbox controller can be adjusted (defaulting to 20ms or 50ms). 
-Decreasing this interval provides a more responsive feel but increases network traffic. 
-* Transmission Pause: A "Pause All Data Xmit" feature allows users to halt all outbound packets immediately. 
-This is a critical safety feature when troubleshooting configuration issues without affecting the live state of the flight controller. 
+* Packet Intervals: The frequency at which the GCS polls for the Xbox controller can be adjusted (defaulting to 20ms or 50ms). Decreasing this interval provides a more responsive feel but increases network traffic. 
+* Transmission Pause: A "Pause All Data Xmit" feature allows users to halt all outbound packets immediately. This is a critical safety feature when troubleshooting configuration issues without affecting the live state of the flight controller. 
 * Heartbeats: If the "Serving Helicopter" remains silent for a period exceeding the HeartbeatInterval, it will automatically transmit a heartbeat packet to maintain the connection state and prevent the GCS from timing out. 
 
 ### 3.5 Connectivity Handshake 
@@ -279,18 +268,14 @@ It is governed by a state machine that progresses only when specific conditions 
 
 #### 4.2.1 Phase 1: Identity & Version Verification 
 * Step 1-2 (Initialization): The GCS sends a request for the paramSetVersion and paramSetChecksum from the flight target. 
-* Step 3 (Comparison): The GCS compares the returned values against its own local settings. 
-If the versions match, the system may skip to a steady state. 
-If they differ, the system prepares for a bulk synchronization. 
+* Step 3 (Comparison): The GCS compares the returned values against its own local settings. If the versions match, the system may skip to a steady state. If they differ, the system prepares for a bulk synchronization. 
 
 #### 4.2.2 Phase 2: Bulk Data Transfer 
 * Step 4 (Directional Sync): Based on the user's choice or system defaults, the GCS decides to either Read from Chopper (update the GCS with the aircraft's current settings) or Write to Chopper (push the GCS settings to the aircraft). 
-* Filtering by Flag: The system does not sync every variable in the system. 
-It specifically iterates through the largestVarID and only transmits variables marked with the plsHandshk flag. 
+* Filtering by Flag: The system does not sync every variable in the system. It specifically iterates through the largestVarID and only transmits variables marked with the plsHandshk flag. 
 
 #### 4.2.3 Phase 3: Verification & Steady State 
-* Step 5 (Acknowledgment Wait): The GCS waits for the unackedPacketCount to reach zero. 
-It monitors the Round Trip Time (RTT) to ensure all configuration packets were successfully received by the target. 
+* Step 5 (Acknowledgment Wait): The GCS waits for the unackedPacketCount to reach zero. It monitors the Round Trip Time (RTT) to ensure all configuration packets were successfully received by the target. 
 * Step 10 (Steady State): Once all plsHandshk variables are confirmed, the system enters Step 10. The 3D simulation or physical motors are now "Armed" and ready to respond to Xbox controller inputs. 
 
 ### 4.3 SuperVar Architecture 
@@ -323,9 +308,9 @@ The system monitors these files for changes; if the monitorRetainDataForChangesT
 
 ### 4.5 Manual Synchronization 
 While the handshake is typically automatic, users can force a re-synchronization at any time: 
-* Navigate to Parameters > Re-Handshake With Aircraft. 
-* The Event Log will display the transition from HandshakeStep 0 through the sequence. 
-* If the handshake fails (e.g., due to a "Handshake Watchdog" timeout), the system will revert to Step 0 and alert the user to check the network connection or the SystemID. 
+1. Navigate to Parameters > Re-Handshake With Aircraft. 
+2. The Event Log will display the transition from HandshakeStep 0 through the sequence. 
+3. If the handshake fails (e.g., due to a "Handshake Watchdog" timeout), the system will revert to Step 0 and alert the user to check the network connection or the SystemID. 
 
 ## Chapter 5: Controller Configuration 
 
@@ -347,12 +332,10 @@ Because every physical controller has slight mechanical variances, the software 
 This routine is essential for ensuring that "center" on your physical stick actually corresponds to "zero force" in the simulation. 
 
 #### 5.3.1 Step-by-Step Calibration 
-* Enter Mode: Navigate to Main Display > Controller Calibration. 
-* Neutral Sampling: Leave the sticks at their rest positions. 
-The system samples the raw analog values (LJ_X_Raw, RJ_X_Raw, etc.) to calculate the average electrical offset. 
-* Range Definition: Move both sticks to their maximum extents in a circular motion. 
-This allows the software to calculate the Magnitude (LJ_Mag) and Angle (LJ_Ang) scaling factors. 
-* Deadzone Calculation: The system automatically establishes a "deadzone" around the center to prevent "drift"—where the drone moves slowly even when you aren't touching the sticks. 
+1. Enter Mode: Navigate to Main Display > Controller Calibration. 
+2. Neutral Sampling: Leave the sticks at their rest positions. The system samples the raw analog values (LJ_X_Raw, RJ_X_Raw, etc.) to calculate the average electrical offset. 
+3. Range Definition: Move both sticks to their maximum extents in a circular motion. This allows the software to calculate the Magnitude (LJ_Mag) and Angle (LJ_Ang) scaling factors. 
+4. Deadzone Calculation: The system automatically establishes a "deadzone" around the center to prevent "drift"—where the drone moves slowly even when you aren't touching the sticks. 
 
 #### 5.3.2 Saving Offsets 
 Once calibration is complete, the offsets (e.g., Ctrl.LJ_X_Offset) are stored in the SuperVar system. 
@@ -365,8 +348,7 @@ To save network bandwidth, the entire state of the controller is packed into a s
 
 ### 5.5 Visual Verification 
 Before attempting flight, the pilot should use the Controller Input screen (Main Display > Controller Input). 
-* Visual Feedback: This screen provides a real-time graphical representation of the controller. 
-As you move the physical sticks, the virtual bars on the screen will move to show exactly what the simulation "sees". 
+* Visual Feedback: This screen provides a real-time graphical representation of the controller. As you move the physical sticks, the virtual bars on the screen will move to show exactly what the simulation "sees". 
 * Connectivity Alerts: If the software loses contact with the USB device, a large red warning "Controller NOT Connected" will be overlaid on the display, and all transmission to the flightboard will be safely halted. 
 
 ## Chapter 6: Flight Simulation & Graphics 
@@ -378,8 +360,7 @@ This engine is responsible for transforming raw physics data—coordinates, Eule
 #### 6.1.1 OpenGL Architecture 
 The simulation utilizes a standard 3D pipeline: 
 * Geometry Management: 3D objects are constructed using the Patch and Geometry classes, supporting both smooth and faceted shading. 
-* Coordinate System: The simulation uses a standard Cartesian system ($X, Y, Z$). 
-In the 3D view, $Y$ represents altitude (vertical), while $X$ and $Z$ represent the lateral ground plane. 
+* Coordinate System: The simulation uses a standard Cartesian system ($X, Y, Z$). In the 3D view, $Y$ represents altitude (vertical), while $X$ and $Z$ represent the lateral ground plane. 
 * Lighting and Textures: The environment supports real-time lighting and can load external .obj files with associated texture maps via the ObjMan class. 
 
 ### 6.2 Aircraft Geometry Configuration 
@@ -415,8 +396,7 @@ The animateSimulation() function updates the state of the world at a fixed inter
 The drone is rendered procedurally using several primitive components: 
 * Helicopter Body: The central chassis of the drone. 
 * Motor Housings: Cylindrical objects placed at the geometry coordinates defined in Section 6.2. 
-* Rotor Disks: Semi-transparent RectTorus objects that represent the spinning propellers. 
-The visual "thickness" or opacity of these disks can be tied to the motor's throttle value to simulate speed. 
+* Rotor Disks: Semi-transparent RectTorus objects that represent the spinning propellers. The visual "thickness" or opacity of these disks can be tied to the motor's throttle value to simulate speed. 
 
 ### 6.5 Interacting with the Simulation 
 When in Helicopter Simulation Mode, the pilot can use both the Xbox controller and keyboard shortcuts to manage the environment: 
@@ -433,22 +413,18 @@ The system is designed to handle both user-initiated commands and automatic safe
 
 ### 7.2 Flight Envelopes and Operational Limits 
 To ensure the safety of the simulation and prevent the loss of the virtual or physical aircraft, the system allows for the definition of strict operational boundaries. 
-* Altitude Ceiling: Users can define a maximum ceiling in feet, either relative to Sea Level (Setpoint_Ceiling_SeaLevel) or Above Takeoff (Setpoint_Ceiling_DistanceAboveTakeoff). 
-If the aircraft hits this limit, the autopilot will override the pilot's vertical throttle to prevent further ascent. 
-* Distance Tolerance: Parameters like AutoPilot_ReturnHomeAltitudeObjectiveToleranceReqd define the "precision window" for the autopilot. 
-The system must bring the aircraft within this distance of the target before the mission segment is considered complete. 
+* Altitude Ceiling: Users can define a maximum ceiling in feet, either relative to Sea Level (Setpoint_Ceiling_SeaLevel) or Above Takeoff (Setpoint_Ceiling_DistanceAboveTakeoff). If the aircraft hits this limit, the autopilot will override the pilot's vertical throttle to prevent further ascent. 
+* Distance Tolerance: Parameters like AutoPilot_ReturnHomeAltitudeObjectiveToleranceReqd define the "precision window" for the autopilot. The system must bring the aircraft within this distance of the target before the mission segment is considered complete. 
 
 ### 7.3 Communication Loss Failsafes (Comms Loss) 
 Because the simulation relies on a networked link, the system includes a tiered response strategy for when the connection to the Ground Control Station (GCS) is degraded or lost. 
-* Position Hold: The first stage of a comms-loss event. 
-The aircraft utilizes the AutoPilot_CommLoss_Delay_PositionHold timer to maintain its current $X, Y, Z$ coordinates while waiting for a signal recovery. 
+* Position Hold: The first stage of a comms-loss event. The aircraft utilizes the AutoPilot_CommLoss_Delay_PositionHold timer to maintain its current $X, Y, Z$ coordinates while waiting for a signal recovery. 
 * Return Home (RTH): If the connection remains lost beyond the defined threshold, the aircraft transitions to RTH mode, navigating back to the takeoff coordinates. 
 * Automatic Land: The final fail-safe. If the aircraft is unable to re-establish a link or reach home, it will initiate a controlled descent based on the AutoPilot_descentRate. 
 
 ### 7.4 Battery Management & Safety 
 The software continuously monitors the Battery_ActualVoltage and Battery_PercentRemainingFiltered SuperVars. 
-* Low Battery Return Home: When the battery reaches a specific percentage (e.g., 25%), the system can automatically trigger a Return Home maneuver. 
-This can be set to Recalculate Continuously, which dynamically adjusts the "Go Home" threshold based on the aircraft's current distance from the origin. 
+* Low Battery Return Home: When the battery reaches a specific percentage (e.g., 25%), the system can automatically trigger a Return Home maneuver. This can be set to Recalculate Continuously, which dynamically adjusts the "Go Home" threshold based on the aircraft's current distance from the origin. 
 * Critical Landing: If the battery level becomes critical, the autopilot initiates an immediate landing (AutoPilot_LowBatt_Percent_LandNow) to prevent a mid-air power failure. 
 * System Kill: For extreme safety scenarios, the AutoPilot_LowBatt_Percent_KillSystem flag can be set to completely disarm the motors once the aircraft has safely reached the ground. 
 
@@ -478,10 +454,8 @@ It provides a real-time window into the memory of the system, allowing operators
 
 #### 8.1.1 Accessing and Searching 
 * Access: Navigate to Parameters > All Parameters to open the explorer. 
-* Live Search: Use the search bar at the top of the window to filter the hundreds of available variables. 
-The search logic supports partial matches and ignores case sensitivity, making it easy to find specific parameters like "PID," "Battery," or "Motor". 
-* Organization: Variables are grouped by their functional class (e.g., Motion Vars, Craft Status). 
-The vertical scroll bar allows for quick navigation through the indexed list. 
+* Live Search: Use the search bar at the top of the window to filter the hundreds of available variables. The search logic supports partial matches and ignores case sensitivity, making it easy to find specific parameters like "PID," "Battery," or "Motor". 
+* Organization: Variables are grouped by their functional class (e.g., Motion Vars, Craft Status). The vertical scroll bar allows for quick navigation through the indexed list. 
 
 #### 8.1.2 Real-Time Editing 
 Unlike static configuration files, the Variable List allows for "Hot-Swapping" values during a live session. 
@@ -492,14 +466,12 @@ Unlike static configuration files, the Variable List allows for "Hot-Swapping" v
 For deep-dive diagnostics, the system maintains two distinct logging streams that can be viewed in real-time or saved for post-flight analysis. 
 
 #### 8.2.1 Log Types 
-* Communication Log (Comms): A low-level trace of every UDP packet sent and received. 
-It captures packet IDs, byte sizes, and CRC status. This is the primary tool for identifying network jitter or dropped packets. 
+* Communication Log (Comms): A low-level trace of every UDP packet sent and received. It captures packet IDs, byte sizes, and CRC status. This is the primary tool for identifying network jitter or dropped packets. 
 * Event Log: A high-level narrative of system milestones. It records critical events such as "Initiated Handshake," "Controller Disconnected," or "Return to Home Triggered". 
 
 #### 8.2.2 Log Management 
 * Scroll Lock: Users can toggle between Scrolling and Scroll Locked modes to pause the log and inspect a specific event without the display jumping to the newest entry. 
-* Disk Persistence: Both logs can be automatically written to the ./ProgramData/ directory as commsLog.txt and eventLog.txt. 
-These files include timestamps for every entry, facilitating synchronized debugging between the GCS and the aircraft. 
+* Disk Persistence: Both logs can be automatically written to the ./ProgramData/ directory as commsLog.txt and eventLog.txt. These files include timestamps for every entry, facilitating synchronized debugging between the GCS and the aircraft. 
 
 ### 8.3 Troubleshooting Common Errors 
 Most system issues stem from network configuration or hardware initialization. 
@@ -507,14 +479,12 @@ Most system issues stem from network configuration or hardware initialization.
 #### 8.3.1 Socket Binding Failures 
 If the application displays an "Unable to Bind Incoming Traffic" warning on startup: 
 * Cause: Another instance of the program is already running and has locked Port 12346. 
-* Solution: Close all instances of the application and restart. On some systems, a "ghost" process may remain; 
-use your OS Task Manager to ensure no SendingUnit processes are active. 
+* Solution: Close all instances of the application and restart. On some systems, a "ghost" process may remain; use your OS Task Manager to ensure no SendingUnit processes are active. 
 
 #### 8.3.2 Version & Checksum Mismatches 
 If the connection reaches Handshake Step 3 and then reverts to Step 0: 
 * Cause: The paramSetVersion or paramSetChecksum on the Controller does not match the Aircraft. 
-* Solution: Ensure both machines are running the exact same version of the compiled code. 
-A single change in globalDefines.h or superVar_Declarations.h will change the checksum and prevent the handshake from completing. 
+* Solution: Ensure both machines are running the exact same version of the compiled code. A single change in globalDefines.h or superVar_Declarations.h will change the checksum and prevent the handshake from completing. 
 
 #### 8.3.3 Controller Connectivity 
 If the screen displays " Controller NOT Connected ": 
@@ -538,40 +508,33 @@ In this setup:
 
 ### 9.2 Step 1: Networking & IP Discovery 
 Before configuring the software, both computers must be visible to each other on the local network. 
-* On Computer B (Simulation PC): Open the Communication Statistics window (Parameters > Statistics). 
-* Locate IP: Look at the Local IP Addresses box at the bottom. 
-Identify the IPv4 address (e.g., 192.168.1.15). 
-* Connectivity Test: From Computer A, attempt to ping the IP of Computer B to ensure the firewall is not blocking ICMP/UDP traffic. 
+1. On Computer B (Simulation PC): Open the Communication Statistics window (Parameters > Statistics). 
+2. Locate IP: Look at the Local IP Addresses box at the bottom. Identify the IPv4 address (e.g., 192.168.1.15). 
+3. Connectivity Test: From Computer A, attempt to ping the IP of Computer B to ensure the firewall is not blocking ICMP/UDP traffic. 
 
 ### 9.3 Step 2: Configuring Computer A (The Controller) 
 This machine is responsible for capturing the physical Xbox stick movements and transmitting the ZPack_XBoxControllerWord to the simulation. 
-* Set Identity: Open Parameters > Communication Settings. 
-* Role Selection: Set the What is this system? dropdown to Client Computer. 
-* Target Addressing: In the Address of Peer field, enter the IP address of Computer B. 
-* Packet Interval: Set the Joystick Xmit Max Speed (e.g., 20ms or 50ms). 
-This determines how often the timer2 loop transmits control words. 
-* Enable Xmit: Ensure Pause All Data Xmit is unchecked. 
+1. Set Identity: Open Parameters > Communication Settings. 
+2. Role Selection: Set the What is this system? dropdown to Client Computer. 
+3. Target Addressing: In the Address of Peer field, enter the IP address of Computer B. 
+4. Packet Interval: Set the Joystick Xmit Max Speed (e.g., 20ms or 50ms). This determines how often the timer2 loop transmits control words. 
+5. Enable Xmit: Ensure Pause All Data Xmit is unchecked. 
 
 ### 9.4 Step 3: Configuring Computer B (The Simulator) 
 This machine receives the control words and processes the SimuHeli physics model. 
-* Set Identity: Open Parameters > Communication Settings. 
-* Role Selection: Set the What is this system? dropdown to Serving Helicopter. 
-* Point Back (Optional): Enter Computer A's IP in the Address of Peer field to ensure telemetry packets are routed back correctly. 
-* Initialize Graphics: Go to Main Display > Helicopter Simulation (Shortcut: Ctrl+S). 
-The screen will transition to the 3D viewport and begin the animateSimulation() loop. 
+1. Set Identity: Open Parameters > Communication Settings. 
+2. Role Selection: Set the What is this system? dropdown to Serving Helicopter. 
+3. Point Back (Optional): Enter Computer A's IP in the Address of Peer field to ensure telemetry packets are routed back correctly. 
+4. Initialize Graphics: Go to Main Display > Helicopter Simulation (Shortcut: Ctrl+S). The screen will transition to the 3D viewport and begin the animateSimulation() loop. 
 
 ### 9.5 Step 4: Variable Synchronization (The Handshake) 
 The simulation on Computer B will remain "parked" until it receives a valid configuration state from Computer A. 
-* Initiate Sync: On Computer A, click Parameters > Re-Handshake With Aircraft. 
-* Monitor the State: The Event Log will show the transition through the 14-step handshake. 
-The GCS will transmit all variables marked plsHandshk (like motor counts and PID gains) to the Simulator. 
-* Arming: Once the handshake reaches Step 10 (Steady State), Computer B will begin responding to the Xbox sticks. 
+1. Initiate Sync: On Computer A, click Parameters > Re-Handshake With Aircraft. 
+2. Monitor the State: The Event Log will show the transition through the 14-step handshake. The GCS will transmit all variables marked plsHandshk (like motor counts and PID gains) to the Simulator. 
+3. Arming: Once the handshake reaches Step 10 (Steady State), Computer B will begin responding to the Xbox sticks. 
 
 ### 9.6 Performance Monitoring 
 When running a dual-headed simulation, it is critical to monitor the health of the UDP link to prevent "fly-away" scenarios or visual stuttering. 
-* Round Trip Time (RTT): Open the Statistics window on the Controller PC. 
-Monitor the Average RTT. If it spikes above the Ping Baseline, the link is congested. 
-* Packet Errors: Watch the CRC and Bad Length counters. 
-If these climb, it usually indicates a software version mismatch between the two machines or electrical interference if using a wireless network. 
-* Heartbeats: Computer B will automatically send a ZPack_HeartBeat if the link remains silent. 
-On the Controller PC, ensure the heartbeat is being received to maintain the "Connected" status. 
+* Round Trip Time (RTT): Open the Statistics window on the Controller PC. Monitor the Average RTT. If it spikes above the Ping Baseline, the link is congested. 
+* Packet Errors: Watch the CRC and Bad Length counters. If these climb, it usually indicates a software version mismatch between the two machines or electrical interference if using a wireless network. 
+* Heartbeats: Computer B will automatically send a ZPack_HeartBeat if the link remains silent. On the Controller PC, ensure the heartbeat is being received to maintain the "Connected" status.
