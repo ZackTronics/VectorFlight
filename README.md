@@ -1,8 +1,6 @@
 # VectorFlight
 ### Flight Control Stack & Physics Simulation
 
-[https://zacktronics.com/](https://zacktronics.com/)
-
 **VectorFlight** is a comprehensive aerospace engineering project developed over the course of 5 years. It features a sophisticated, low-latency telemetry protocol, a real-time physics simulation, and a drone control suite. 
 
 The architecture is built for **parity**: the same C++ codebase can run as a graphical Ground Control Station (GCS) or as a headless, embedded flight controller Linux - Interfaced to a bare metal microcontroller with sensors.
@@ -10,11 +8,11 @@ The architecture is built for **parity**: the same C++ codebase can run as a gra
 ---
 
 ## 📖 Documentation
-For a deep dive into the system architecture, PID tuning, and dual-computer network setup, please refer to the:
+The documentation is available here:
 [* **VectorFlight - Pegasus - Manual.md** (or .docx)](https://github.com/ZackTronics/VectorFlight/blob/main/VectorFlight%20-%20Pegasus%20-%20Manual.docx)
 
-
-The manual provides a technical roadmap covering everything from the 14-step variable handshake to Hardware-in-the-Loop (HIL) testing.
+See Also:
+[https://zacktronics.com/](https://zacktronics.com/)
 
 ---
 
