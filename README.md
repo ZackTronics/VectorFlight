@@ -10,14 +10,13 @@ The architecture is built for **parity**: the same C++ codebase can run as a gra
 ## 📖 Documentation
 Available here:<br>
 [**VectorFlight - Pegasus - Manual.md** (or .docx)](https://github.com/ZackTronics/VectorFlight/blob/main/VectorFlight%20-%20Pegasus%20-%20Manual.docx)
+See "Chapter 0" for quick start loopback demo.
 
 See Also:<br>
 [https://zacktronics.com/](https://zacktronics.com/)
 
 ---
 
-## 🚀 Quick Start: Loopback Demo
-See Chapter 0 of the documentation referenced above.  
 
 ---
 
