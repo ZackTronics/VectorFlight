@@ -18,15 +18,7 @@ The manual provides a technical roadmap covering everything from the 14-step var
 ---
 
 ## 🚀 Quick Start: Loopback Demo
-For the most simple demonstration, the ground control program can be run in **loopback mode** to control a simulation rendered with OpenGL on a single machine.
-
-1.  **Open the Project:** Open `SendingUnit.pro` with Qt Creator.
-2.  **Initial Build:** Build and run the project. Note that the program may initially complain about missing models or settings.
-3.  **Deploy Assets:** You must manually copy the following folders into your compiled build directory (e.g., `build-SendingUnit-Desktop.../`):
-    * Copy the **`models`** folder.
-    * Copy the **`ProgramData`** folder (contains `retainData.stz`).
-4.  **Hardware:** Plug in an Xbox controller.
-5.  **Run:** Restart the program, navigate to **Main Display > Helicopter Simulation**, and begin.
+See Chapter 0 of the documentation referenced above.  
 
 ---
 
@@ -39,22 +31,7 @@ For the most simple demonstration, the ground control program can be run in **lo
 
 ## 📦 Installation & Build
 
-### Prerequisites
-* **Qt Creator** (v4.14+ recommended)
-* **Qt 5.15 or 6.x**
-* **OpenGL Support**
 
-### Build Instructions
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/Zacktronics/VectorFlight.git](https://github.com/Zacktronics/VectorFlight.git)
-    ```
-2.  **Configure Target:**
-    * **For Desktop Simulator:** Ensure `CONFIG += pi_target` is commented in the `.pro` file.
-    * **For Embedded Target:** Uncomment `CONFIG += pi_target` to enable I2C drivers and GPIO mappings.
-3.  **Build and Run.**
-
----
 
 ## ⚖️ License
 Original control logic, physics engine, and protocol definitions are licensed under the **MIT License**.
