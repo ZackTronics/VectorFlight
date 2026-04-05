@@ -1,5 +1,7 @@
 # VectorFlight - Pegasus - Control System 
-**Zackery Sobin** ## Introduction: The Pegasus Philosophy 
+**Zackery Sobin** 
+
+## Introduction: The Pegasus Philosophy 
 The VectorFlight Pegasus Control System was developed with an ambitious engineering goal: to create a flight control architecture that operates identically whether it is flying a virtual drone in a 3D environment or a physical aircraft in the field. 
 By using a "single source of truth" via the SuperVar framework, Pegasus allows for the seamless iteration of complex flight dynamics, autopilot logic, and sensor filtering on a desktop PC, which can then be deployed to a Raspberry Pi or microcontroller target without rewriting the core engine. 
 
