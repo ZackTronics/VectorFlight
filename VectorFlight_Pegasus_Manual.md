@@ -12,95 +12,95 @@ Whether this suite is utilized as a high-fidelity simulator for pilot training o
 > Always verify safety-critical parameters—such as battery voltage cutoffs and RTH altitudes—in a controlled environment. 
 
 ## Contents 
-* Introduction: The Pegasus Philosophy 1 
-* Chapter 0: Quick Start (Loopback Demo) 5 
-  * 0.1 Opening the Project 5 
-  * 0.2 Initial Build and Directory Setup 5 
-  * 0.3 Running the Simulation 5 
-* Chapter 1: System Overview 6 
-  * 1.1 Introduction to Pegasus Control 6 
-  * 1.2 The Hardware-in-the-Loop (HIL) Bridge 6 
-  * 1.3 The "SuperVar" Framework 6 
-  * 1.4 Communication Architecture 7 
-  * 1.5 System Roles 7 
-* Chapter 2: Installation & Prerequisites 8 
-  * 2.1 Software Requirements 8 
-    * 2.1.1 Qt Framework 8 
-    * 2.1.2 Development Environment 8 
-  * 2.2 Hardware Setup 8 
-    * 2.2.1 Pilot Interface (Xbox Controller) 8 
-    * 2.2.2 Flight Controller (Raspberry Pi / Microcontroller Target) 9 
-  * 2.3 Project Compilation 9 
-    * 2.3.1 Building for Desktop (Default) 9 
-    * 2.3.2 Building for Raspberry Pi / MCU 9 
-  * 2.4 Data Persistence and Directory Structure 9 
-* Chapter 3: Networking & Connectivity 10 
-  * 3.1 The UDP Architecture 10 
-  * 3.2 Role Configuration and Identity 10 
-    * 3.2.1 Serving Helicopter (The Flight Target) 10 
-    * 3.2.2 Client Computer (Ground Control Station) 10 
-  * 3.3 Network Performance & Latency 11 
-    * 3.3.1 Round Trip Time (RTT) and Baselines 11 
-    * 3.3.2 Packet Integrity and Error Tracking 11 
-  * 3.4 Data Transmission Control 11 
-  * 3.5 Connectivity Handshake 12 
-* Chapter 4: The Handshake & Variable Synchronization 12 
-  * 4.1 The Synchronization Philosophy 12 
-  * 4.2 The Handshake State Machine 12 
-    * 4.2.1 Phase 1: Identity & Version Verification 12 
-    * 4.2.2 Phase 2: Bulk Data Transfer 13 
-    * 4.2.3 Phase 3: Verification & Steady State 13 
-  * 4.3 SuperVar Architecture 13 
-    * 4.3.1 Variable Types and Storage 13 
-    * 4.3.2 Functional Flags 13 
-  * 4.4 Data Persistence (.stz and .csv) 14 
-    * 4.4.1 The .stz (Settings) File 14 
-    * 4.4.2 The .csv (Retain) File 14 
-  * 4.5 Manual Synchronization 14 
-* Chapter 5: Controller Configuration 15 
-  * 5.1 Input Device Architecture 15 
-  * 5.2 Mapping the Xbox Controller 15 
-  * 5.3 The Calibration Routine 15 
-    * 5.3.2 Saving Offsets 16 
-  * 5.4 Data Transmission (The Controller Word) 16 
-  * 5.5 Visual Verification 16 
-* Chapter 6: Flight Simulation & Graphics 17 
-  * 6.1 The 3D Rendering Engine 17 
-    * 6.1.1 OpenGL Architecture 17 
-  * 6.2 Aircraft Geometry Configuration 17 
-    * 6.2.1 Motor Mapping 17 
-    * 6.2.2 Preset Configurations 17 
-  * 6.3 The Physics Engine (SimuHeli) 18 
-    * 6.3.1 Forces and Moments 18 
-    * 6.3.2 The Animation Loop 18 
-  * 6.4 Visual Elements of the Drone 18 
-  * 6.5 Interacting with the Simulation 19 
-* Chapter 7: Autopilot & Safety Logic 19 
-  * 7.1 Autopilot Architecture 19 
-  * 7.2 Flight Envelopes and Operational Limits 19 
-  * 7.3 Communication Loss Failsafes (Comms Loss) 19 
-  * 7.4 Battery Management & Safety 20 
-  * 7.5 PID Control & Stabilization Logic 20 
-    * 7.5.1 Axis Stabilization 20 
-    * 7.5.2 Motor Summation 21 
-  * 7.6 Monitoring Autopilot State 21 
-* Chapter 8: Maintenance & Diagnostics 21 
-  * 8.1 The Variable List (SuperVar Explorer) 21 
-    * 8.1.1 Accessing and Searching 21 
-    * 8.1.2 Real-Time Editing 21 
-  * 8.2 Event & Communication Logging 22 
-    * 8.2.1 Log Types 22 
-    * 8.2.2 Log Management 22 
-  * 8.3 Troubleshooting Common Errors 22 
-    * 8.3.1 Socket Binding Failures 22 
-    * 8.3.2 Version & Checksum Mismatches 23 
-    * 8.3.3 Controller Connectivity 23 
-  * 8.4 Maintenance Checklist 23 
-* Chapter 9: Dual-Headed Simulation Setup 23 
-  * 9.1 Concept: Distributed Processing 24 
-  * 9.3 Step 2: Configuring Computer A (The Controller) 24 
-  * 9.4 Step 3: Configuring Computer B (The Simulator) 24 
-  * 9.5 Step 4: Variable Synchronization (The Handshake) 25 
+* Introduction: The Pegasus Philosophy
+* Chapter 0: Quick Start (Loopback Demo)
+  * 0.1 Opening the Project
+  * 0.2 Initial Build and Directory Setup
+  * 0.3 Running the Simulation
+* Chapter 1: System Overview
+  * 1.1 Introduction to Pegasus Control
+  * 1.2 The Hardware-in-the-Loop (HIL) Bridge
+  * 1.3 The "SuperVar" Framework
+  * 1.4 Communication Architecture
+  * 1.5 System Roles
+* Chapter 2: Installation & Prerequisites
+  * 2.1 Software Requirements
+    * 2.1.1 Qt Framework
+    * 2.1.2 Development Environment
+  * 2.2 Hardware Setup
+    * 2.2.1 Pilot Interface (Xbox Controller)
+    * 2.2.2 Flight Controller (Raspberry Pi / Microcontroller Target)
+  * 2.3 Project Compilation
+    * 2.3.1 Building for Desktop (Default)
+    * 2.3.2 Building for Raspberry Pi / MCU
+  * 2.4 Data Persistence and Directory Structur
+* Chapter 3: Networking & Connectivity
+  * 3.1 The UDP Architecture
+  * 3.2 Role Configuration and Identity
+    * 3.2.1 Serving Helicopter (The Flight Target)
+    * 3.2.2 Client Computer (Ground Control Station)
+  * 3.3 Network Performance & Latency
+    * 3.3.1 Round Trip Time (RTT) and Baselines
+    * 3.3.2 Packet Integrity and Error Tracking
+  * 3.4 Data Transmission Control
+  * 3.5 Connectivity Handshake
+* Chapter 4: The Handshake & Variable Synchronization
+  * 4.1 The Synchronization Philosophy
+  * 4.2 The Handshake State Machine
+    * 4.2.1 Phase 1: Identity & Version Verification
+    * 4.2.2 Phase 2: Bulk Data Transfer
+    * 4.2.3 Phase 3: Verification & Steady State
+  * 4.3 SuperVar Architecture
+    * 4.3.1 Variable Types and Storage
+    * 4.3.2 Functional Flags
+  * 4.4 Data Persistence (.stz and .csv)
+    * 4.4.1 The .stz (Settings) File
+    * 4.4.2 The .csv (Retain) File
+  * 4.5 Manual Synchronization
+* Chapter 5: Controller Configuration
+  * 5.1 Input Device Architecture
+  * 5.2 Mapping the Xbox Controller
+  * 5.3 The Calibration Routine
+    * 5.3.2 Saving Offsets
+  * 5.4 Data Transmission (The Controller Word)
+  * 5.5 Visual Verification
+* Chapter 6: Flight Simulation & Graphics
+  * 6.1 The 3D Rendering Engine
+    * 6.1.1 OpenGL Architecture
+  * 6.2 Aircraft Geometry Configuration
+    * 6.2.1 Motor Mapping
+    * 6.2.2 Preset Configurations
+  * 6.3 The Physics Engine (SimuHeli)
+    * 6.3.1 Forces and Moments
+    * 6.3.2 The Animation Loop
+  * 6.4 Visual Elements of the Drone
+  * 6.5 Interacting with the Simulation
+* Chapter 7: Autopilot & Safety Logic
+  * 7.1 Autopilot Architecture
+  * 7.2 Flight Envelopes and Operational Limits
+  * 7.3 Communication Loss Failsafes (Comms Loss)
+  * 7.4 Battery Management & Safety
+  * 7.5 PID Control & Stabilization Logic
+    * 7.5.1 Axis Stabilization
+    * 7.5.2 Motor Summation
+  * 7.6 Monitoring Autopilot State
+* Chapter 8: Maintenance & Diagnostics
+  * 8.1 The Variable List (SuperVar Explorer)
+    * 8.1.1 Accessing and Searching
+    * 8.1.2 Real-Time Editing
+  * 8.2 Event & Communication Logging
+    * 8.2.1 Log Types
+    * 8.2.2 Log Management
+  * 8.3 Troubleshooting Common Errors
+    * 8.3.1 Socket Binding Failures
+    * 8.3.2 Version & Checksum Mismatches
+    * 8.3.3 Controller Connectivity
+  * 8.4 Maintenance Checklist
+* Chapter 9: Dual-Headed Simulation Setup
+  * 9.1 Concept: Distributed Processing
+  * 9.3 Step 2: Configuring Computer A (The Controller)
+  * 9.4 Step 3: Configuring Computer B (The Simulator)
+  * 9.5 Step 4: Variable Synchronization (The Handshake)
   * 9.6 Performance Monitoring 25 
 
 ## Chapter 0: Quick Start (Loopback Demo) 
