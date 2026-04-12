@@ -46,7 +46,7 @@ Click "Add
 1. Pull the repo.
 2. Double clikc **SendingUnit.pro** Qt Creator qill open.
 3. Click the green "Play" triangle.
-4. You will be prompted for parameters.<br>
+4. You will be prompted for parameters<br>
 ![alt text](/docs/image.png)<br>
 Click OK then from the `VectorFlight_Pegasus_Core`folder, select `defaultSettings.rtz`
 5.  You will then see the following popup.<br>
