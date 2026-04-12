@@ -1,7 +1,11 @@
 # VectorFlight
 ### Flight Control Stack & Physics Simulation
 
- I wanted to build an IP Controlled drone before drones were a thing. I spent years researching network behavior such as packet loss, misordered, packets, latency etc. I made a responsive, light and yet robost communication protcol. I made a physics simulation and a flight control algorithm that runs inside it. I discovered years later that NASA calls this "Software in the loop". I build a circuit board with mems gyroscope, acceleratoeter, compass, barometer, and motor controllers. and wrote drivers for each.  The architecture is built for **parity**: the same C++ codebase can run as a graphical Ground Control Station (GCS) or as a headless, embedded flight controller Linux - Interfaced to a bare metal microcontroller with sensors.
+ I spent years researching network behavior such as packet loss, misordered, packets, latency etc. I made a responsive, light and yet robost communication protcol designed for remote applicaitons.
+
+I made a physics simulation and a flight control algorithm that runs inside it. I discovered years later that NASA calls this "Software in the loop". 
+
+
 
 
 | Simulation | User Input | SuperVars |
