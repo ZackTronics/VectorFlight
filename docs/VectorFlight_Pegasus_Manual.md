@@ -29,7 +29,7 @@ Whether this suite is utilized as a high-fidelity simulator for pilot training o
 ## Chapter 0: Quick Start (Loopback Demo) 
 For the most straightforward introduction to the system, you can run a "Loopback" simulation where the Ground Control interface and the 3D OpenGL renderer run on the same machine. 
 
-### 0.1 Opening the Project 
+### 0.1 Install the Prerequisites
 1. Install <a href="https://download.qt.io/new_archive/qt/5.5/5.5.1/">**qt-opensource-windows-x86-msvc2010-5.5.1.exe**</a>
 2. Download	 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8109">**directx_Jun2010_redist.exe**</a> <br>
 	  Run it then choose an output folder, <br>
@@ -42,7 +42,7 @@ Click "Add
 5.  **Virtual Machine Users:** > If the simulation window appears black, ensure that 3D Acceleration is enabled in your VM settings and that Guest Additions are installed. Without hardware acceleration, the DirectX 11 shaders may fail to render.   
 
 
-### 0.2 Quick Start
+### 0.2 Start the Flight Simulation in Loopback Mode.
 1. Pull the repo.
 2. Double clikc **SendingUnit.pro** Qt Creator qill open.
 3. Click the green "Play" triangle.
@@ -61,7 +61,7 @@ To the build or debug directory that was created when you clicked the green play
 You will see the following screen. <br> When you connect an XBox controller the following text should dissappear.
 ![alt text](/docs/imageControllerNotConnected.png)
 8.  CLick "**Main Display**" --> "**Controller Input**"<br>
-To test your controller
+To test your controller<br>
 ![alt text](/docs/ControllerTest.png)<br>
 
 9.  CLick "**Main Display**" --> "**Helicopter Simulation**"<br>
