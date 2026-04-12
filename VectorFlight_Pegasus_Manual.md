@@ -30,23 +30,47 @@ Whether this suite is utilized as a high-fidelity simulator for pilot training o
 For the most straightforward introduction to the system, you can run a "Loopback" simulation where the Ground Control interface and the 3D OpenGL renderer run on the same machine. 
 
 ### 0.1 Opening the Project 
-1. Launch Qt Creator. 
-2. Open the SendingUnit.pro project file. 
-3. Select a valid kit (e.g., Desktop Qt 5.5.1 MSVC2010 32-bit). 
+1. Install <a href="https://download.qt.io/new_archive/qt/5.5/5.5.1/">**qt-opensource-windows-x86-msvc2010-5.5.1.exe**</a>
+2. Download	 <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8109">**directx_Jun2010_redist.exe**</a> <br>
+	  Run it then choose an output folder, <br>
+    From the extracted folder, run **DXSETUP.exe**
+2. Install <a href="**https://download.qt.io/new_archive/qt/5.5/5.5.1/**">**MSVC++2010.**</a>
+4.  Click Start "Add an optional feature" <br>
+Install Graphics Tools.<br>
+![alt text](/docs/image_graphictools.png)<br>
+Click "Add
+5.  **Virtual Machine Users:** > If the simulation window appears black, ensure that 3D Acceleration is enabled in your VM settings and that Guest Additions are installed. Without hardware acceleration, the DirectX 11 shaders may fail to render.   
 
-### 0.2 Initial Build and Directory Setup 
-1. Click Run (or press Ctrl+R). 
-2. The program will initialize but may complain about missing OpenGL models or settings. 
-3. Deploy Assets: You must manually copy your asset folders into the build directory created by Qt Creator (e.g., build-SendingUnit-Desktop_Qt_5_5_1_MSVC2010_32bit-Debug/). 
-4. Copy the "models" folder into the build directory. 
-5. Copy the "ProgramData" folder (or the retainData.stz settings file) into the build directory. 
-6. Restart: Run the program again. It should now load the 3D environment and the default parameter set without errors. 
 
-### 0.3 Running the Simulation 
-1. Plug in an Xbox Controller: Ensure it is recognized by the OS before proceeding. 
-2. Configure Role: Go to Parameters > Communication Settings and ensure the system is set to Serving Helicopter. 
-3. Enter Simulation: Go to Main Display > Helicopter Simulation. 
-4. Begin: Move the sticks on your controller to see the 3D drone respond in real-time via the loopback network. 
+### 0.2 Quick Start
+1. Pull the repo.
+2. Double clikc **SendingUnit.pro** Qt Creator qill open.
+3. Click the green "Play" triangle.
+4. You will be prompted for parameters.
+![alt text](/docs/image.png)<br>
+Click OK then from the `prog_SendingUnit`folder, select `defaultSettings.rtz`
+5.  You will then see the following popup.
+![alt text](/docs/image2.png)<br>
+Click "**OK**" then close the "Pegasus Control" main window.
+![alt text](image.png)
+6.  Copy this folder:<br>
+   `prog_SendingUnit/model`  (just the model subdir") <br>
+To the build or debug directory that was created when you clicked the green play button.<br>For instance, you should create this folder:<br>
+`build-SendingUnit-Desktop_Qt_5_5_1_MSVC2010_32bit-Debug/model`
+7.  Click the green play triangle again. <br>
+You will see the following screen. <br> When you connect an XBox controller the following text should dissappear.
+![alt text](/docs/imageControllerNotConnected.png)
+8.  CLick "**Main Display**" --> "**Controller Input**"<br>
+To test your controller
+![alt text](/docs/ControllerTest.png)<br>
+
+9.  CLick "**Main Display**" --> "**Helicopter Simulation**"<br>
+Start the helocopter simulation
+
+
+
+<br><br>
+
 
 ## Chapter 1: System Overview 
 
