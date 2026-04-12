@@ -2,6 +2,9 @@
 ### Flight Control Stack & Physics Simulation
 
 
+
+
+
 The VectorFlight Pegasus Control System was developed with an ambitious engineering goal: to create a flight control architecture that operates identically whether it is flying a virtual drone in a 3D environment or a physical aircraft in the field. 
 By using a "single source of truth" via the SuperVar framework, Pegasus allows for the seamless iteration of complex flight dynamics, autopilot logic, and sensor filtering on a desktop PC, which can then be deployed to a Raspberry Pi or microcontroller target without rewriting the core engine. 
 
@@ -13,25 +16,49 @@ Whether this suite is utilized as a high-fidelity simulator for pilot training o
 
 The architecture is built for **parity**: the same C++ codebase can run as a graphical Ground Control Station (GCS) or as a headless, embedded flight controller Linux - Interfaced to a bare metal microcontroller with sensors.
 
+
+
+  * Compatible with Windows or Linux
+  
+
+
 ---
 
 ## 📖 Documentation
-Full Documentation.<br>
-[**VectorFlight - Pegasus - Manual.md** ](https://github.com/ZackTronics/VectorFlight/blob/main/docs/VectorFlight_Pegasus_Manual.md) <br>
-                                                    
-
-## 📖 Screenshots
-
-Shown below is one screenshot. 
-[**Click here for more!** ](https://github.com/ZackTronics/VectorFlight/blob/main/docs/Screenshots.md) <br>
 
 
 
+[**Chapter 1 - Quick Start Localhost/Loopback - Simulation** ](docs/Chapter1_Loopback_QuickStart.md)  <br>
+This is a quick start guid that explains the most simple use case on the most simple hardware.
 
+
+[**Chapter Y - AI Generated Comprensive Documetation** ](docs/ChapterZ_AI_Generated_Docs.md) <br>
+This is an **extensive** though, largely **unverified** AI-generated documentation. <br>
+Its contents will be verified than migrated into chapters above.
+
+
+[**Chapter Z - Screenshots** ](docs/Screenshots.md) <br>
+These screenshots will be incorporated into the documentation above.
+
+
+
+# Example Screenshot
+Here is one screenshot.  There links above contain many more.
 ![alt text](/docs/image-1.png)
+
+<br>
+
+# Typical Remote Control Architecture
+The remote aircraft could be:
+1.  A simulation on the same computer.
+2.  A simulation ran on a different (or remote) computer
+3.  A physical aircraft.
+
+![alt text](/docs/arch.png)
+
 ---
 
-## 📂 Key Files to Explore
+## 📂 Interesting Sourcecode  Files to Explore
 
 * **Flight Control Algorithm:** [`z01_SimFlightControl.h`](https://github.com/ZackTronics/VectorFlight/blob/main/VectorFlight_Pegasus_Core/OpenGL/z01_SimFlightControl.h)
 * **Simulation Engine:** [`GL_4_Animate.h`](https://github.com/ZackTronics/VectorFlight/blob/main/VectorFlight_Pegasus_Core/OpenGL/GL_4_Animate.h)
