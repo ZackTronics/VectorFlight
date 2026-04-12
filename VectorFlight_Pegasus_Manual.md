@@ -46,12 +46,12 @@ Click "Add
 1. Pull the repo.
 2. Double clikc **SendingUnit.pro** Qt Creator qill open.
 3. Click the green "Play" triangle.
-4. You will be prompted for parameters.
+4. You will be prompted for parameters.<br>
 ![alt text](/docs/image.png)<br>
 Click OK then from the `VectorFlight_Pegasus_Core`folder, select `defaultSettings.rtz`
-5.  You will then see the following popup.
+5.  You will then see the following popup.<br>
 ![alt text](/docs/image2.png)<br>
-Click "**OK**" then close the "Pegasus Control" main window.
+Click "**OK**" then close the "Pegasus Control" main window.<br>
 ![alt text](image.png)
 6.  Copy this folder:<br>
    `VectorFlight_Pegasus_Core/model`  (just the model subdir") <br>
