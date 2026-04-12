@@ -1,20 +1,40 @@
 
-Here are some screenshots of various screens in VectorFlight. <br>
-Some of these will be incorporated into the documenation manual.
+#
 
-**Main Display ->Comms Log**<br>
+These are screen captures from Vectorflight
+
+
+<br><br>
+
+# Main Display ->Controller Input
+![alt text](ControllerTest.png)
+
+<br><br>
+
+# Main Display ->Comms Log
 ![alt text](image-3.png)
 
-**Parameters-->All parameters**<br>
-![alt text](image-6.png)<br>
+<br><br>
 
+# Parameters-->All parameters
+All parameters are instantly searchable<br><br>
+(Status Parameter Examples)
+![alt text](image-6.png)<br>
+(Configuration Paramter Examples)
 ![alt text](image-7.png)
 
-**Parameters->Communication Log**<br>
+<br><br>
+
+#Parameters->Communication Log
 ![alt text](image-2.png)
 
-**Parameters->Aircraft Geometry**<br>
+<br><br>
+
+# Parameters->Aircraft Geometry
 ![alt text](image-5.png)
 
-**Parameters->Communication Status**<br>
+
+<br><br>
+
+# Parameters->Communication Status
 ![alt text](image-4.png)
