@@ -48,13 +48,13 @@ Click "Add
 3. Click the green "Play" triangle.
 4. You will be prompted for parameters.
 ![alt text](/docs/image.png)<br>
-Click OK then from the `prog_SendingUnit`folder, select `defaultSettings.rtz`
+Click OK then from the `VectorFlight_Pegasus_Core`folder, select `defaultSettings.rtz`
 5.  You will then see the following popup.
 ![alt text](/docs/image2.png)<br>
 Click "**OK**" then close the "Pegasus Control" main window.
 ![alt text](image.png)
 6.  Copy this folder:<br>
-   `prog_SendingUnit/model`  (just the model subdir") <br>
+   `VectorFlight_Pegasus_Core/model`  (just the model subdir") <br>
 To the build or debug directory that was created when you clicked the green play button.<br>For instance, you should create this folder:<br>
 `build-SendingUnit-Desktop_Qt_5_5_1_MSVC2010_32bit-Debug/model`
 7.  Click the green play triangle again. <br>
@@ -65,7 +65,8 @@ To test your controller
 ![alt text](/docs/ControllerTest.png)<br>
 
 9.  CLick "**Main Display**" --> "**Helicopter Simulation**"<br>
-Start the helocopter simulation
+10.  Press the "A" key to disable the Autopilot and take control of the aircraft.
+11.  Thumbstick up to take off.
 
 
 
