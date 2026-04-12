@@ -16,8 +16,8 @@
 This is a quick start guid that explains the most simple use case on the most simple hardware.
 
 
-[**Chapter Y - AI Generated Comprensive Documetation** ](docs/ChapterZ_AI_Generated_Docs.md) <br>
-This is an **extensive** though, largely **unverified** AI-generated documentation. <br>
+[**Chapter Y - AI Generated Comprensive Documentation** ](docs/ChapterZ_AI_Generated_Docs.md) <br>
+This is an **--extensive--** though, largely **--unverified--** AI-generated documentation. <br>
 Its contents will be verified than migrated into chapters above.
 
 
