@@ -1,32 +1,16 @@
 # VectorFlight
 ### Flight Control Stack & Physics Simulation
 
+ I wanted to build an IP Controlled drone before drones were a thing. I spent years researching network behavior such as packet loss, misordered, packets, latency etc. I made a responsive, light and yet robost communication protcol. I made a physics simulation and a flight control algorithm that runs inside it. I discovered years later that NASA calls this "Software in the loop". I build a circuit board with mems gyroscope, acceleratoeter, compass, barometer, and motor controllers. and wrote drivers for each.  The architecture is built for **parity**: the same C++ codebase can run as a graphical Ground Control Station (GCS) or as a headless, embedded flight controller Linux - Interfaced to a bare metal microcontroller with sensors.
 
 
+| Simulation | User Input | SuperVars |
+| :---: | :---: | :---: |
+| <img src="docs/image-1.png" width="700"> | <img src="docs/ControllerTest.png" width="700"> | <img src="docs/image-6.png" width="700"> |
 
 
-The VectorFlight Pegasus Control System was developed with an ambitious engineering goal: to create a flight control architecture that operates identically whether it is flying a virtual drone in a 3D environment or a physical aircraft in the field. 
-By using a "single source of truth" via the SuperVar framework, Pegasus allows for the seamless iteration of complex flight dynamics, autopilot logic, and sensor filtering on a desktop PC, which can then be deployed to a Raspberry Pi or microcontroller target without rewriting the core engine. 
-
-Whether this suite is utilized as a high-fidelity simulator for pilot training or as the primary flight-brain for a custom multi-rotor, this manual provides the technical roadmap for configuration, networking, and flight operations. 
-
-
-
- It features a sophisticated, low-latency telemetry protocol, a real-time physics simulation, and a drone control suite. 
-
-The architecture is built for **parity**: the same C++ codebase can run as a graphical Ground Control Station (GCS) or as a headless, embedded flight controller Linux - Interfaced to a bare metal microcontroller with sensors.
-
-
-
-  * Compatible with Windows or Linux
-  
-
-
----
 
 ## 📖 Documentation
-
-
 
 [**Chapter 1 - Quick Start Localhost/Loopback - Simulation** ](docs/Chapter1_Loopback_QuickStart.md)  <br>
 This is a quick start guid that explains the most simple use case on the most simple hardware.
@@ -42,9 +26,7 @@ These screenshots will be incorporated into the documentation above.
 
 
 
-# Example Screenshot
-Here is one screenshot.  There links above contain many more.
-![alt text](/docs/image-1.png)
+
 
 <br>
 
