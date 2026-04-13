@@ -16,7 +16,7 @@ The Flightboard Runs a separate piece of software.  It contains the same flight 
    
 
 
-ZPack which can transmit Supervars very fast but the variables and their associated flags must be defined at compile time.  They contain the following fields.<br>
+ZPack can transmit Supervars very fast but the variables and their associated flags must be defined at compile time. <br> They contain the following fields.<br>
 1. DataType <br>
 2. Name <br>
 3. Class
