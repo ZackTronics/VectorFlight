@@ -63,7 +63,7 @@ Click "**OK**" then close the "Pegasus Control" main window.<br>
 To the build or debug directory that was created when you clicked the green play button.<br>For instance, you should create this folder:<br>
 `build-SendingUnit-Desktop_Qt_5_5_1_MSVC2010_32bit-Debug/model`
 7.  Click the green play triangle again. <br>
-You will see the following screen. <br> When you connect an XBox controller the following text should dissappear.
+You will see the following screen. <br> When you connect an XBox controller the following text should dissappear.<br>
 ![alt text](/docs/imageControllerNotConnected.png)
 8.  CLick "**Main Display**" --> "**Controller Input**"<br>
 To test your controller<br>
