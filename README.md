@@ -3,7 +3,7 @@
 
  I spent years researching network behavior such as packet loss, misordered, packets, latency etc. I made a responsive, light and yet robost communication protcol designed for remote applicaitons.
 
-I made a physics simulation and a flight control algorithm that runs inside it. I discovered years later that NASA calls this "Software in the loop". 
+I made a physics simulation and a flight control algorithm that runs inside it. I discovered years later that NASA calls this "Software in the loop". You can use this as a plotless video game in loopback mode.  You could use it to control distant drones or merely draw inspiration from it to write other software.
 
 
 
