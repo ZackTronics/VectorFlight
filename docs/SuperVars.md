@@ -6,7 +6,7 @@
 # SuperVars
 
 The GroundControl Station and Embedded Target have the same software.  Its mode (helicopter vs embedded) is selected through a preprocessor definion.<br><br>
-The Flightboard Runs a separate piece of software.  It contains the same flight control algoorithm as the simulation that appears in VectorFlight but has code to interface with vectorflight and with the sensors and motor controllers.
+The Flightboard Runs a separate piece of software.  It contains the same flight control algorithm as the simulation that appears in VectorFlight but has code to interface with vectorflight and with the sensors and motor controllers.
   
 
 **SuperVars** can be transmitted the following ways: <br>
