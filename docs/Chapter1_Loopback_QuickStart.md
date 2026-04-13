@@ -20,8 +20,27 @@ Click "Add
 ## Linux
 
 The program is also Linux compatible.<br>
-Instead of using MSVC GCC is used.<br>
-TODO:  Document any special steps required
+Instead of using MSVC, GCC is used.<br>
+
+If using this software on a PC as a ground control station there is nothing to do.  The code shown below in `z01_mainwindow.cpp` includes XBox controller drivers for both Linux and Windows and they each have include guards for their OS.
+<br>
+
+
+```
+#ifdef TARGET_HARDWARE_PI
+//#include "systemDependent/joystickPoll_HelicopterMode.h"
+#endif
+#ifndef TARGET_HARDWARE_PI
+#include "systemDependent/joystickPoll_Dummy.h"
+#include "systemDependent/joystickPoll_Linux.h"
+#include "systemDependent/joystickPoll_win.h"
+#endif
+```
+Note: <br> If you wanted to run the software in an embedded target you would need to define:
+`TARGET_HARDWARE_PI`.
+This would disable the physics engine, OpenGL, and would enable sharing of SuperVars (Via I2C) with a flightboard (microcontroller with sensors and motor controllers.).
+
+<br><br>
 
 ---
 
