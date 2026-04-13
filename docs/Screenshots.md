@@ -25,7 +25,7 @@ All parameters are instantly searchable<br><br>
 
 <br><br>
 
-#Parameters->Communication Log
+# Parameters->Communication Log
 ![alt text](image-2.png)
 
 <br><br>
