@@ -67,7 +67,7 @@ Changes to these are saved in a non-volatile way.
 
 ## 5. I2CFast / I2CSlow
 **Define communication between the embedded target and the flighboard ONLY**<br>
-Variables flagged with I2CFast are your mission-critical, high-frequency data points—things like gyroscope readings, accelerometer data, or motor outputs that need to be updated constantly to keep the aircraft stable.  Variables flagged with I2CSlow are things that change gradually or aren't critical for immediate flight stabilization—like battery voltage, error strings, or GPS coordinates.
+Variables flagged with I2CFast are your mission-critical, high-frequency data points.  Variables flagged with I2CSlow are things that change gradually or aren't critical for immediate flight stabilization—like battery voltage, error strings, or GPS coordinates.
 
 
 <br><br><br><br>
