@@ -5,6 +5,8 @@
 
 I made a physics simulation and a flight control algorithm that runs inside it. I discovered years later that NASA calls this "Software in the loop". You can use this as a plotless video game in loopback mode.  You could use it to control distant drones or merely draw inspiration from it to write other software.
 
+The coummunication protocol used "ZPack" has lower overhead and higher efficiency than MAVLink. 
+
 
 
 
