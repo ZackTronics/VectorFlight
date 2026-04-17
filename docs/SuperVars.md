@@ -24,7 +24,6 @@ ZPack can transmit Supervars very fast but the variables and their associated fl
 5. Comments
 6. Flags *(I2CSlow, I2CFast, noFlags, plsHandshk, UserEditable, defIsRetain )* <br>
 
-# Ground Control Station "All Settings"
 
 <br><br>
 

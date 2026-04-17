@@ -25,6 +25,8 @@ This is a quick start guid that explains the most simple use case on the most si
 [**Chapter 2 - SuperVars** ](docs/SuperVars.md)  <br>
 This chapter explains the supervar definitions.  
 
+[**Chapter 3 - ZPack** ](docs/ZPack.html)  <br>
+This chapter explains the supervar definitions.  
 
 [**Chapter Y - AI Generated Comprensive Documentation** ](docs/ChapterZ_AI_Generated_Docs.md) <br>
 This is an **--extensive--** though, largely **--unverified--** AI-generated documentation. <br>

@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VectorFlight Pegasus Communication Protocol Documentation</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: auto; padding: 20px; background-color: #f4f4f9; }
+        h1, h2, h3 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border: 1px solid #ddd; }
+        th { background-color: #2c3e50; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        code { background: #e8e8e8; padding: 2px 4px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; }
+        .note { background: #e7f3fe; border-left: 6px solid #2196F3; margin-bottom: 15px; padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>VectorFlight Pegasus Protocol Specification</h1>
+    <p>The VectorFlight Pegasus protocol, also known as the <strong>ZackPacket Protocol</strong>, is a specialized telemetry and control specification designed for high-performance communication between Ground Control Stations (GCS) and flight hardware. It utilizes a custom reliability layer over UDP to ensure consistent synchronization of "SuperVariables" across lossy network links.</p>
+
+
+<div class="doc-container">
+    <h2>Variable Update Frequency & Latency Specification</h2>
+    <p>The update frequency for variables in the <strong>VectorFlight Pegasus</strong> system is a dynamic, multi-tier architecture. It scales update rates based on data priority, network health, and hardware constraints.</p>
+
+    <h2>1. The Polling Tiers</h2>
+    <p>Standard telemetry is categorized into polling classes, defined by the <code>pollingInterval[i]</code> settings.</p>
+    
+    
+
+    <ul>
+        <li><strong>Class 1 (High-Priority):</strong> Aimed at critical flight dynamics (IMU, Attitude). Typically configured for <strong>20ms – 50ms</strong> intervals.</li>
+        <li><strong>Class 2 (Medium-Priority):</strong> Used for environmental and status telemetry (Battery, Temperature). Typically configured for <strong>100ms – 500ms</strong> intervals.</li>
+        <li><strong>On-Demand (Handshake/Static):</strong> Configuration parameters (PID gains) are synchronized during the 10-step handshake or upon explicit request.</li>
+    </ul>
+
+    <h2>2. Event-Driven Immediate Updates</h2>
+    <p>The system does not always wait for a polling cycle. When a user modifies a variable in the Ground Control Station UI, the <code>PleaseXmitChanges()</code> logic triggers an immediate transmission.</p>
+    <ul>
+        <li><strong>Delta Detection:</strong> The system compares the current value against the <code>Cached3</code> (last sent) value.</li>
+        <li><strong>Immediate Dispatch:</strong> If a difference is detected, a <code>ZPack_WriteSuperVar</code> (0xB3) is queued for the next available transmission window, bypassing the standard polling timers.</li>
+    </ul>
+
+    <h2>3. Network-Aware Throttling</h2>
+    <p>If the network link degrades, the system automatically slows down variable updates to maintain connection integrity.</p>
+
+    
+
+    <p>The <code>xmitInterval</code> stretches based on the number of unacknowledged packets in the <code>sentPacketsLog</code>:</p>
+    <div class="code-block">
+        xmitInterval = 37.0 * (packetWindow / (packetWindow - (unackedPacketCount * 1.07)))
+    </div>
+    <p>In optimal conditions (0 unacked), the system transmits at the maximum rate allowed by the polling settings. If the window (default 3) fills, updates can slow significantly (e.g., from 20ms to 200ms+) until ACKs are received.</p>
+
+    <h2>4. Controller Latency (XBox Input)</h2>
+    <p>Joystick inputs are treated as the highest priority data stream.</p>
+    <ul>
+        <li><strong>Target Rate:</strong> Governed by <code>iControllerPacketInterval</code>, typically set to <strong>20ms (50Hz)</strong>.</li>
+        <li><strong>Crucial Status:</strong> Controller words (0x36) are marked as <code>criticalPacket</code>, ensuring they are tracked in the retry log and retransmitted if an ACK is not received within the RTT-based timeout.</li>
+    </ul>
+
+
+    <hr>
+
+    <h2>Summary Update Matrix</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Data Category</th>
+                <th>Typical Update Goal</th>
+                <th>Logic Control</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Joystick/Flight Control</strong></td>
+                <td>20ms (50Hz)</td>
+                <td><code>iControllerPacketInterval</code></td>
+            </tr>
+            <tr>
+                <td><strong>Class 1 Telemetry</strong></td>
+                <td>20ms - 50ms</td>
+                <td><code>pollingInterval[1]</code></td>
+            </tr>
+            <tr>
+                <td><strong>Class 2 Telemetry</strong></td>
+                <td>100ms - 500ms</td>
+                <td><code>pollingInterval[2]</code></td>
+            </tr>
+            <tr>
+                <td><strong>UI Param Changes</strong></td>
+                <td>&lt; 50ms (Event-driven)</td>
+                <td><code>PleaseXmitChanges()</code></td>
+            </tr>
+            <tr>
+                <td><strong>I2C Hardware Cache</strong></td>
+                <td>1.3ms per chunk</td>
+                <td><code>getDataFromFlightboard()</code></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+    <h2>1. Physical and Transport Layer</h2>
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Protocol</td>
+            <td>UDP</td>
+            <td>User Datagram Protocol for low-latency transmission.</td>
+        </tr>
+        <tr>
+            <td>Default Port</td>
+            <td>12346</td>
+            <td>Standard listening port for incoming datagrams.</td>
+        </tr>
+        <tr>
+            <td>IP Version</td>
+            <td>IPv4 / IPv6</td>
+            <td>Dual-stack support configurable via <code>enumIPAddressingMode</code>.</td>
+        </tr>
+        <tr>
+            <td>Endianness</td>
+            <td>Little-Endian</td>
+            <td>Default byte order for numeric serialization.</td>
+        </tr>
+    </table>
+
+    <h2>2. Binary Framing Specification</h2>
+    <p>Communication is structured into "ZackPackets," which act as containers for one or more atomic "Packlets".</p>
+
+    <h3>2.1 ZackPacket Header & Footer</h3>
+    <p>Every UDP datagram follows this top-level structure:</p>
+    
+    <table>
+        <tr>
+            <th>Offset (Bytes)</th>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>Packet Type</td>
+            <td>uint8</td>
+            <td>Must be <code>0x25</code> for ZackPackets.</td>
+        </tr>
+        <tr>
+            <td>1 - 2</td>
+            <td>Sequence Number</td>
+            <td>uint16</td>
+            <td>Global counter (<code>glbZackPacketSequence</code>) used for tracking and ACKs.</td>
+        </tr>
+        <tr>
+            <td>3 - (N-2)</td>
+            <td>Payload</td>
+            <td>Binary</td>
+            <td>A concatenated stream of one or more Packlets.</td>
+        </tr>
+        <tr>
+            <td>N-1 - N</td>
+            <td>CRC-X25</td>
+            <td>uint16</td>
+            <td>Checksum for the entire packet calculated using the X25 polynomial.</td>
+        </tr>
+    </table>
+
+    <h3>2.2 Packlet Structure</h3>
+    <p>Packlets allow multiple message types (e.g., Heartbeat and Write) to be bundled into a single transmission.</p>
+    <table>
+        <tr>
+            <th>Offset (Bytes)</th>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>0 - 1</td>
+            <td>Packlet Size</td>
+            <td>uint16</td>
+            <td>Total size of the packlet (Header + Payload).</td>
+        </tr>
+        <tr>
+            <td>2 - 3</td>
+            <td>Message ID</td>
+            <td>uint16</td>
+            <td>Identifier for the operation (MsgID).</td>
+        </tr>
+        <tr>
+            <td>4+</td>
+            <td>Payload</td>
+            <td>Var</td>
+            <td>Variable-length data specific to the MsgID.</td>
+        </tr>
+    </table>
+
+    <h2>3. Message Directory (MsgIDs)</h2>
+    <table>
+        <tr>
+            <th>MsgID</th>
+            <th>Name</th>
+            <th>Payload Description</th>
+        </tr>
+        <tr>
+            <td>0x36</td>
+            <td>ZPack_XBoxControllerWord</td>
+            <td>15-byte block containing stick magnitudes, angles, and button bit-masks.</td>
+        </tr>
+        <tr>
+            <td>0xAC</td>
+            <td>ZPack_Acknowledge</td>
+            <td>2-byte payload containing the sequence number being acknowledged.</td>
+        </tr>
+        <tr>
+            <td>0xB3</td>
+            <td>ZPack_WriteSuperVar</td>
+            <td>VarID followed by the raw serialized value of the variable.</td>
+        </tr>
+        <tr>
+            <td>0xB4</td>
+            <td>ZPack_ReadRequest</td>
+            <td>2-byte VarID requesting a remote value update.</td>
+        </tr>
+        <tr>
+            <td>0xB5</td>
+            <td>ZPack_ReadResponse</td>
+            <td>VarID followed by the variable's current value.</td>
+        </tr>
+        <tr>
+            <td>0xB6</td>
+            <td>ZPack_HeartBeat</td>
+            <td>Empty payload; used for connection keep-alive.</td>
+        </tr>
+    </table>
+
+    <h2>4. Data Type Serialization</h2>
+    <p>All SuperVariables are serialized into <code>QByteArray</code> format before transmission.</p>
+    <table>
+        <tr>
+            <th>Type ID</th>
+            <th>Type Name</th>
+            <th>Bytes</th>
+            <th>Serialization Method</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>mac_uint8</td>
+            <td>1</td>
+            <td>Direct byte append.</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>mac_uint16</td>
+            <td>2</td>
+            <td>Bit-shifting or <code>memcpy</code>.</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>mac_uint32</td>
+            <td>4</td>
+            <td>Bit-shifting or <code>memcpy</code>.</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>mac_uint64</td>
+            <td>8</td>
+            <td>Bit-shifting or <code>memcpy</code>.</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>mac_float32</td>
+            <td>4</td>
+            <td>IEEE 754 <code>memcpy</code>.</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>mac_float64</td>
+            <td>8</td>
+            <td>IEEE 754 <code>memcpy</code>.</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>mac_QString</td>
+            <td>50</td>
+            <td>UTF-8 encoded string (fixed buffer on hardware).</td>
+        </tr>
+    </table>
+
+    <h2>5. Reliability and State Management</h2>
+
+    <h3>5.1 Retransmission Logic</h3>
+    <p>The protocol uses a selective retransmission strategy for <strong>Crucial Packets</strong>.</p>
+    <ul>
+        <li><strong>Storage:</strong> Outgoing crucial packets are archived in <code>sentPacketsLog</code>.</li>
+        <li><strong>Timeout:</strong> The system waits for <code>msecsRetyInterval</code>, calculated as $averageRTT \times 7$.</li>
+        <li><strong>Recovery:</strong> If no ACK is received, the <code>crucialPacketBody</code> is re-queued for transmission.</li>
+    </ul>
+
+    <h3>5.2 Connection Status Levels</h3>
+    <p>Connection quality is assessed based on the ratio of unacknowledged packets to the <code>packetWindow</code>.</p>
+    <table>
+        <tr>
+            <th>Level</th>
+            <th>Status</th>
+            <th>Condition</th>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>Disconnected</td>
+            <td>No packets received for 3x Heartbeat interval.</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Congested</td>
+            <td>Unacked count &ge; 70% of <code>packetWindow</code>.</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Degraded</td>
+            <td>Unacked count &ge; 30% of <code>packetWindow</code>.</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Optimal</td>
+            <td>Unacked count &lt; 30% of <code>packetWindow</code>.</td>
+        </tr>
+    </table>
+
+    <h3>5.3 Handshake State Machine</h3>
+    <p>The system follows a strict synchronization flow (Step 0 to 10) to ensure GCS and Aircraft parameter parity.</p>
+    <table>
+        <tr>
+            <th>Step</th>
+            <th>State</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>Initial</td>
+            <td>Reset <code>VarHandshakeStatus</code> for all variables.</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Request</td>
+            <td>Send Read Requests for all <code>plsHandshk</code> variables.</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Synchronizing</td>
+            <td>Wait for Read Responses and compare with local values.</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Conflict Check</td>
+            <td>Detect mismatches; trigger user prompt if differences exist.</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>Steady State</td>
+            <td>Begin high-speed telemetry and joystick control.</td>
+        </tr>
+    </table>
+
+    <h2>6. Timing and Performance Configuration</h2>
+    <table>
+        <tr>
+            <th>Setting</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Heartbeat Interval</td>
+            <td>Configurable</td>
+            <td>Interval for keep-alive packets to monitor link health.</td>
+        </tr>
+        <tr>
+            <td>Class 1 Polling</td>
+            <td>Configurable (ms)</td>
+            <td>High-frequency telemetry (e.g., IMU, Position).</td>
+        </tr>
+        <tr>
+            <td>Class 2 Polling</td>
+            <td>Configurable (ms)</td>
+            <td>Low-frequency telemetry (e.g., Battery, Temperature).</td>
+        </tr>
+        <tr>
+            <td>Joystick Xmit Speed</td>
+            <td>Configurable (ms)</td>
+            <td>Maximum rate for controller updates (<code>iControllerPacketInterval</code>).</td>
+        </tr>
+    </table>
+	
+	
+<div class="container">
+    <h1>Advanced Specification: ZackPacket (0x25)</h1>
+    <p>This document provides an exhaustive breakdown of the <strong>ZackPacket</strong> container architecture, the <strong>Packet Window</strong> congestion logic, and the reliability matrix governing acknowledgments.</p>
+
+    <h2>1. Detailed ZackPacket (ZPack) Anatomy</h2>
+    <p>The ZackPacket is a high-level container designed to encapsulate multiple "Packlets" within a single UDP datagram to minimize header overhead and maximize throughput.</p>
+
+    <h3>1.1 Packet Encapsulation Layout</h3>
+    
+
+[Image of networking packet encapsulation]
+
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Sub-Component</th>
+                <th>Type</th>
+                <th>Bytes</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="2" class="highlight">Fixed Header</td>
+                <td>Packet Type ID</td>
+                <td><code>unsigned char</code></td>
+                <td>1</td>
+                <td>Constant value: <code>0x25</code>.</td>
+            </tr>
+            <tr>
+                <td>Sequence Number</td>
+                <td><code>unsigned short</code></td>
+                <td>2</td>
+                <td>Incrementing ID (<code>glbZackPacketSequence</code>) for tracking.</td>
+            </tr>
+            <tr>
+                <td class="highlight">Payload</td>
+                <td>Packlet Stream</td>
+                <td>Binary</td>
+                <td>Var</td>
+                <td>Contains one or more Packlets (detailed in Section 1.2).</td>
+            </tr>
+            <tr>
+                <td class="highlight">Fixed Footer</td>
+                <td>CRC-X25</td>
+                <td><code>uint16_t</code></td>
+                <td>2</td>
+                <td>16-bit checksum calculated over the entire packet.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>1.2 Packlet Internal Structure</h3>
+    <p>Every message within the ZPack payload must follow the Packlet framing to allow the receiver to "de-stack" multiple messages.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Bytes</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Packlet Size</td>
+                <td><code>uint16_t</code></td>
+                <td>2</td>
+                <td>Total bytes in this Packlet, including these 2 bytes.</td>
+            </tr>
+            <tr>
+                <td>Message ID (MsgID)</td>
+                <td><code>uint16_t</code></td>
+                <td>2</td>
+                <td>The specific command or data type (e.g., <code>0xB3</code> for Write).</td>
+            </tr>
+            <tr>
+                <td>Message Body</td>
+                <td>Var</td>
+                <td>Var</td>
+                <td>The actual data (e.g., VarID + Value).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h2>2. The Packet Window & Flow Control</h2>
+    <p>The <strong>Packet Window</strong> is a sliding-window mechanism used to prevent network congestion, particularly on low-resource hardware like the Raspberry Pi.</p>
+    
+
+    <div class="logic-box">
+        <strong>Window Limitation:</strong> The <code>packetWindow</code> is default-set to <strong>3</strong>. This small window is intentionally chosen to counteract undesired buffering on the RPI.
+    </div>
+
+    <h3>2.1 Connection Status Determination</h3>
+    <p>The system calculates <code>unackedPacketCount</code> by checking the <code>sentPacketsLog</code>. This count is compared to the <code>packetWindow</code> to set the <code>connectionStatus</code>.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Status Level</th>
+                <th>Logic Condition</th>
+                <th>Network Behavior</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>3 (Optimal)</strong></td>
+                <td><code>unacked</code> &lt; 30% of Window </td>
+                <td>Full telemetry enabled; minimum transmit intervals.</td>
+            </tr>
+            <tr>
+                <td><strong>2 (Degraded)</strong></td>
+                <td>30% &le; <code>unacked</code> &lt; 70% </td>
+                <td>Telemetry continues; potential slight increase in intervals.</td>
+            </tr>
+            <tr>
+                <td><strong>1 (Congested)</strong></td>
+                <td><code>unacked</code> &ge; 70% of Window </td>
+                <td>System throttles polling; focus on Heartbeat and Criticals.</td>
+            </tr>
+            <tr>
+                <td><strong>0 (Timed Out)</strong></td>
+                <td>No RX for 3x Heartbeat </td>
+                <td>Link marked as dead; Handshake reset to Step 0.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2.2 Adaptive Transmit Interval</h3>
+    <p>If the <code>HelicopterMode</code> is inactive (Ground Station mode), the system dynamically stretches the <code>xmitInterval</code> based on the window utilization:</p>
+    <code>xmitInterval = 37.0 * (packetWindow / (packetWindow - (unackedPacketCount * 1.07)))</code> 
+
+    <hr>
+
+    <h2>3. Acknowledgment (ACK) Matrix</h2>
+    <p>Not all packets are treated equally. The system categorizes messages to ensure reliable delivery of critical data without flooding the network with ACKs for ACK messages.</p>
+
+    <h3>3.1 Which Messages are Acknowledged?</h3>
+    <p>When a ZPack is received, the system checks each Packlet's <code>MsgID</code> to decide if it should trigger a <code>ZPack_Acknowledge</code> (0xAC).</p>
+    <table>
+        <thead>
+            <tr>
+                <th>MsgID</th>
+                <th>Message Type</th>
+                <th>Requires ACK?</th>
+                <th>Reasoning</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>0xB3</code></td>
+                <td>WriteSuperVar</td>
+                <td><strong>YES</strong> </td>
+                <td>Ensures the remote system successfully updated the parameter.</td>
+            </tr>
+            <tr>
+                <td><code>0xB4</code></td>
+                <td>ReadRequest</td>
+                <td><strong>YES</strong> </td>
+                <td>Confirms the request was received before the response is sent.</td>
+            </tr>
+            <tr>
+                <td><code>0xB5</code></td>
+                <td>ReadResponse</td>
+                <td><strong>YES</strong> </td>
+                <td>Confirms the requested data reached the requester.</td>
+            </tr>
+            <tr>
+                <td><code>0x36</code></td>
+                <td>XBoxController</td>
+                <td><strong>YES</strong> </td>
+                <td>Critical for flight safety to ensure control inputs are received.</td>
+            </tr>
+            <tr>
+                <td><code>0xB6</code></td>
+                <td>HeartBeat</td>
+                <td><strong>YES</strong> </td>
+                <td>Used to verify link two-way integrity.</td>
+            </tr>
+            <tr>
+                <td><code>0xAC</code></td>
+                <td>Acknowledge</td>
+                <td><strong>NO</strong> </td>
+                <td>Prevents infinite ACK loops.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>3.2 Crucial vs. Non-Crucial Transmission</h3>
+    <p>The <code>releaseOutPacket(int isCrucial)</code> function determines how a packet is tracked.</p>
+    <ul>
+        <li><strong>Crucial Packets (1):</strong> The <code>originalData</code> is archived in the <code>sentPacketsLog</code>. If the sequence number is not cleared by an incoming ACK, the system retransmits the data.</li>
+        <li><strong>Non-Crucial Packets (0):</strong> Sent immediately but not archived. If lost, the system relies on the next periodic update (e.g., standard telemetry polling).</li>
+    </ul>
+</div>
+
+
+
+<div class="doc-container">
+    <h1>VectorFlight Pegasus: Flow Control & Protocol Specification</h1>
+    <p>This technical specification details the <strong>VectorFlight Pegasus</strong> communication system, focusing on its sophisticated flow control mechanisms and the <strong>ZackPacket (0x25)</strong> architecture.</p>
+
+    <h2>1. Flow Control Logic: Dynamic Transmission Timing</h2>
+    <p>The system does not rely on a fixed transmission rate. Instead, it uses a closed-loop feedback mechanism to adjust the frequency of packets based on network latency and congestion.</p>
+
+    <h3>1.1 Determining Transmission Frequency</h3>
+    <p>The code uses two primary methods to decide when to transmit:</p>
+    <ul>
+        <li><strong>External Timing:</strong> A high-level Qt timer (<code>timer2</code>) triggers <code>decideIfToSendPackets()</code>.</li>
+        <li><strong>Internal Delta-Time Logic:</strong> The <code>PeriodicityFunction</code> tracks the time elapsed since the last occurrence of a specific event using <code>toMSecsSinceEpoch()</code>. If the elapsed time exceeds a defined <code>periodMsecs</code>, the function returns 1, allowing the transmission to proceed.</li>
+    </ul>
+
+    
+
+    <h3>1.2 Adaptive Congestion Scaling</h3>
+    <p>When the system is in Ground Station mode, it dynamically stretches the interval between transmissions to prevent saturating the link. The <code>xmitInterval</code> is calculated using the following formula:</p>
+    
+    <div class="code-block">
+        xmitInterval = 37.0 * ((float) packetWindow / ((float) packetWindow - ((float) unackedPacketCount * 1.07)));
+    </div>
+
+    <p>As <code>unackedPacketCount</code> approaches the <code>packetWindow</code> limit, the time between allowed transmissions increases exponentially, ensuring the link has time to recover.</p>
+
+    <h2>2. The Packet Window & Reliability Layer</h2>
+    <p>The <strong>Packet Window</strong> serves as a threshold for active, unacknowledged crucial data.</p>
+
+    
+
+    <h3>2.1 Window Logic & Performance</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Standard Value</th>
+                <th>Operational Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>packetWindow</code></td>
+                <td>3</td>
+                <td>Keeps buffers short to prevent latency spikes on the Raspberry Pi.</td>
+            </tr>
+            <tr>
+                <td><code>msecsRetyInterval</code></td>
+                <td>Adaptive</td>
+                <td>Set based on current <code>averageRTT</code> to optimize retransmission speed.</td>
+            </tr>
+            <tr>
+                <td><code>crucialPacket</code> flag</td>
+                <td>Binary</td>
+                <td>Determines if a packet is stored in the <code>sentPacketsLog</code> for tracking.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2.2 Acknowledgment Matrix</h3>
+    <p>Incoming ZackPackets trigger an <code>Acknowledge</code> packlet (0xAC) only for specific message types to avoid unnecessary network traffic.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Message ID</th>
+                <th>Description</th>
+                <th>Requires ACK</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>0xB3</code></td>
+                <td>WriteSuperVar</td>
+                <td><strong>Yes</strong> - Confirms remote parameter update.</td>
+            </tr>
+            <tr>
+                <td><code>0x36</code></td>
+                <td>XBoxController</td>
+                <td><strong>Yes</strong> - Ensures flight control commands arrive.</td>
+            </tr>
+            <tr>
+                <td><code>0xAC</code></td>
+                <td>Acknowledge</td>
+                <td><strong>No</strong> - ACK-of-ACK is suppressed to prevent loops.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h2>3. ZackPacket (ZPack) Container Specification</h2>
+    <p>Every UDP datagram is framed as a <strong>ZackPacket</strong> container (ID: <code>0x25</code>).</p>
+
+    <h3>3.1 Binary Frame Layout</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Offset</th>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>0</td>
+                <td>Type ID</td>
+                <td><code>uchar</code></td>
+                <td>Always <code>0x25</code>.</td>
+            </tr>
+            <tr>
+                <td>1-2</td>
+                <td>Sequence Num</td>
+                <td><code>uint16</code></td>
+                <td>Unique identifier for ACK matching.</td>
+            </tr>
+            <tr>
+                <td>3 to N-3</td>
+                <td>Packlets</td>
+                <td>Binary</td>
+                <td>Variable number of bundled sub-messages.</td>
+            </tr>
+            <tr>
+                <td>N-2 to N</td>
+                <td>CRC-X25</td>
+                <td><code>uint16</code></td>
+                <td>16-bit checksum calculated via bit-wise XOR and shifts.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>3.2 SuperVariable Serialization</h3>
+    <p>Data is converted into raw byte streams using specialized <code>num2QByteArray</code> overloads.</p>
+    <ul>
+        <li><strong>Integer Types:</strong> Manually masked and shifted into Big or Little Endian order based on the <code>isBigEndian</code> flag.</li>
+        <li><strong>Floating Point:</strong> Serialized via <code>memcpy</code> for direct IEEE 754 compatibility.</li>
+        <li><strong>Strings:</strong> Converted to UTF-8 with a fixed maximum length of 50 characters.</li>
+    </ul>
+
+    <hr>
+
+    <h2>4. State Synchronization: The Handshake</h2>
+    <p>A 10-step state machine governs initial connection and parameter verification.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Handshake Step</th>
+                <th>Phase</th>
+                <th>GCS Protocol Behavior</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><strong>Initiation</strong></td>
+                <td>GCS sends <code>ZPack_ReadRequest</code> for all <code>plsHandshk</code> variables.</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><strong>Verification</strong></td>
+                <td>GCS waits for responses and marks <code>VarHandshakeStatus</code> based on value parity.</td>
+            </tr>
+            <tr>
+                <td>3-5</td>
+                <td><strong>Resolution</strong></td>
+                <td>If mismatches occur, user intervention is required to sync aircraft gains with GCS defaults.</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td><strong>Steady State</strong></td>
+                <td>Handshake complete; periodic variable polling begins.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>	
+
+
+
+
+
+<div class="doc-container">
+    <h1>XBox Controller State: Binary Packing Specification</h1>
+    <p>The transmission of controller states in the VectorFlight Pegasus protocol is handled by the <code>ZPack_XBoxControllerWord</code> (MsgID: <code>0x36</code>). To maximize bandwidth efficiency, the system packs multiple boolean buttons into bit-fields and serializes analog stick data into a 15-byte payload.</p>
+
+    <h2>1. The 15-Byte Payload Layout</h2>
+    <p>The controller state is packed into a <code>QByteArray</code> titled <code>ctrlWord</code> within the <code>push_ZPack_XBoxController</code> function.</p>
+    
+    
+
+    <table>
+        <thead>
+            <tr>
+                <th>Byte Offset</th>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Packing Method</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>0</td>
+                <td>Buttons (Set 1)</td>
+                <td>Bit-mask</td>
+                <td>A, B, X, Y, Back, Start, Guide, Left Joy (LJ) click.</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Buttons (Set 2)</td>
+                <td>Bit-mask</td>
+                <td>Right Joy (RJ) click, Left Bumper (LB), Right Bumper (RB).</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>D-Pad (Hat)</td>
+                <td>Nibbles</td>
+                <td><code>KPD_X</code> and <code>KPD_Y</code> mapped to lower and upper nibbles.</td>
+            </tr>
+            <tr>
+                <td>3 - 4</td>
+                <td>Left Trigger (LT)</td>
+                <td>uint16</td>
+                <td>Serialized via <code>num2QByteArray</code>.</td>
+            </tr>
+            <tr>
+                <td>5 - 6</td>
+                <td>Right Trigger (RT)</td>
+                <td>uint16</td>
+                <td>Serialized via <code>num2QByteArray</code>.</td>
+            </tr>
+            <tr>
+                <td>7 - 8</td>
+                <td>Left Joy Mag</td>
+                <td>uint16</td>
+                <td>Magnitude of the left joystick vector.</td>
+            </tr>
+            <tr>
+                <td>9 - 10</td>
+                <td>Left Joy Ang</td>
+                <td>uint16</td>
+                <td>Angle of the left joystick vector.</td>
+            </tr>
+            <tr>
+                <td>11 - 12</td>
+                <td>Right Joy Mag</td>
+                <td>uint16</td>
+                <td>Magnitude of the right joystick vector.</td>
+            </tr>
+            <tr>
+                <td>13 - 14</td>
+                <td>Right Joy Ang</td>
+                <td>uint16</td>
+                <td>Angle of the right joystick vector.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h2>2. Bit-Field Mapping Details</h2>
+    <p>Boolean states are manually shifted into 1-byte buffers before being appended to the packet.</p>
+
+    <h3>2.1 Byte 0: Button Mask A</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Bit</th>
+                <th>Controller Button</th>
+                <th>Logic (C++)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>7 (0x80)</td>
+                <td>A Button</td>
+                <td><code>0x80 & (0xFF * (Ctrl.A && 1))</code></td>
+            </tr>
+            <tr>
+                <td>6 (0x40)</td>
+                <td>B Button</td>
+                <td><code>0x40 & (0xFF * (Ctrl.B && 1))</code></td>
+            </tr>
+            <tr>
+                <td>5 (0x20)</td>
+                <td>X Button</td>
+                <td><code>0x20 & (0xFF * (Ctrl.X && 1))</code></td>
+            </tr>
+            <tr>
+                <td>4 (0x10)</td>
+                <td>Y Button</td>
+                <td><code>0x10 & (0xFF * (Ctrl.Y && 1))</code></td>
+            </tr>
+            <tr>
+                <td>3 (0x08)</td>
+                <td>Back Button</td>
+                <td><code>0x08 & (0xFF * (Ctrl.Back && 1))</code></td>
+            </tr>
+            <tr>
+                <td>2 (0x04)</td>
+                <td>Start Button</td>
+                <td><code>0x04 & (0xFF * (Ctrl.Start && 1))</code></td>
+            </tr>
+            <tr>
+                <td>1 (0x02)</td>
+                <td>Guide Button</td>
+                <td><code>0x02 & (0xFF * (Ctrl.Guide && 1))</code></td>
+            </tr>
+            <tr>
+                <td>0 (0x01)</td>
+                <td>LJ Click</td>
+                <td><code>0x01 & (0xFF * (Ctrl.LJ && 1))</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2.2 Byte 2: D-Pad / Keypad State</h3>
+    <p>The D-Pad uses 4 bits per axis to represent direction.</p>
+    <ul>
+        <li><strong>Lower Nibble (Bits 0-3):</strong> Stores <code>Ctrl.KPD_X</code>.</li>
+        <li><strong>Upper Nibble (Bits 4-7):</strong> Stores <code>Ctrl.KPD_Y</code> shifted left by 4.</li>
+    </ul>
+
+    <hr>
+
+    <h2>3. Analog Serialization Logic</h2>
+    <p>Analog sticks and triggers are converted from the <code>Struct_XBox360Controller</code> into 2-byte <code>uint16</code> segments.</p>
+
+    <div class="logic-note">
+        <strong>Polar Coordinate Conversion:</strong> Unlike standard HID drivers that send X/Y coordinates, this protocol packs <strong>Magnitude</strong> and <strong>Angle</strong>. This is likely optimized for flight physics calculations involving thrust vectors.
+    </div>
+
+    <ul>
+        <li><strong>Serialization:</strong> Uses <code>num2QByteArray(unsigned short int X)</code> which performs bitwise masking to split the 16-bit value into two 8-bit characters.</li>
+        <li><strong>Endianness:</strong> Adheres to the <code>isBigEndian</code> flag, appending bytes in forward or reverse order based on the system configuration.</li>
+    </ul>
+
+    <hr>
+
+    <h2>4. Unpacking and Receiver Validation</h2>
+    <p>The aircraft or receiving computer performs the inverse operation in <code>process_ZPack_XBoxControllerWord</code>.</p>
+    <ul>
+        <li><strong>Sequence Validation:</strong> Rejects packets that are "excessively old" or out of order by comparing <code>incomingPacketSeqNum</code> to <code>highestReceived</code>.</li>
+        <li><strong>Bit Extraction:</strong> Uses bitwise AND operations (e.g., <code>0x80 & (unsigned char)QByteArray2lluint(...)</code>) to reconstruct the boolean button states.</li>
+        <li><strong>Hardware Injection:</strong> On the Raspberry Pi, these values are immediately written to the flight board via <code>I2CSuperVarWrite</code>.</li>
+    </ul>
+</div>
+
+
+
+
+<div class="doc-container">
+    <h1>ZPack to SuperVariable Mapping Specification</h1>
+    <p>This document details the internal architectural link between the <strong>ZackPacket (ZPack)</strong> binary protocol and the <strong>SuperVariable (Vars)</strong> memory management system. The mapping allows the communication system to resolve unique 16-bit IDs into direct memory pointers for real-time telemetry and control.</p>
+
+    <h2>1. The Mapping Bridge: VarID to Pointer</h2>
+    <p>Every SuperVariable is assigned a unique <code>varIDtype</code> (unsigned short). The system uses a multi-stage lookup to resolve this ID into a specific index within the <code>Vars</code> structure.</p>
+
+    
+
+    <h3>1.1 Lookup Logic</h3>
+    <p>The core resolution function is <code>getTypeAndArrIndex(varID, index, type)</code>. It performs the following steps:</p>
+    <ul>
+        <li><strong>Static Table Check:</strong> It first checks a static lookup table (cache) to see if the mapping was previously resolved.</li>
+        <li><strong>Type-Array Iteration:</strong> If not cached, it iterates through all registered variable arrays (uint8, float32, etc.) until a matching <code>ID</code> is found.</li>
+        <li><strong>Metadata Retrieval:</strong> Once the matching array and index are found, the system retrieves the actual memory pointer from the corresponding <code>Ptr_xxx</code> array.</li>
+    </ul>
+
+    <h2>2. Data Serialization Mapping</h2>
+    <p>When a variable is transmitted or received, it is mapped from its native C++ type to a serialized <code>QByteArray</code>.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Packet Payload Component</th>
+                <th>C++ Data Type</th>
+                <th>SuperVar Pointer Array</th>
+                <th>Serialization Logic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Body Bytes 0-1</td>
+                <td><code>varIDtype</code></td>
+                <td><code>Vars.ID_xxx</code></td>
+                <td>Looked up via <code>getVarID</code>.</td>
+            </tr>
+            <tr>
+                <td>Body Bytes 2+ (Type 1)</td>
+                <td><code>unsigned char</code></td>
+                <td><code>*Vars.Ptr_uint8[i]</code></td>
+                <td>Direct byte copy.</td>
+            </tr>
+            <tr>
+                <td>Body Bytes 2+ (Type 7)</td>
+                <td><code>float</code></td>
+                <td><code>*Vars.Ptr_float32[i]</code></td>
+                <td>IEEE 754 <code>memcpy</code>.</td>
+            </tr>
+            <tr>
+                <td>Body Bytes 2+ (Type 9)</td>
+                <td><code>QString</code></td>
+                <td><code>*Vars.Ptr_QString[i]</code></td>
+                <td><code>fromUtf8</code> / <code>toUtf8</code>.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h2>3. Operational Data Flow</h2>
+
+    <h3>3.1 Reception Flow (ZPack → SuperVar)</h3>
+    <p>When a <code>ZPack_WriteSuperVar</code> (0xB3) arrives, the system updates the local application state:</p>
+    <ol>
+        <li>The packet is de-framed to extract the <code>VarID</code> and the <code>RemoteVal</code> (raw bytes).</li>
+        <li>The system calls <code>setValue(VarID, RemoteVal)</code>.</li>
+        <li>Inside <code>setValue</code>, the <code>RemoteVal</code> is cast back to the native type using <code>QByteArray2lluint</code> or <code>QByteArray2float</code>.</li>
+        <li>The resulting value is written directly to the memory address held by the pointer in <code>Vars.Ptr_xxx[index]</code>.</li>
+    </ol>
+
+    <h3>3.2 Transmission Flow (SuperVar → ZPack)</h3>
+    <p>When a variable needs to be sent (e.g., via <code>pushSuperVarWrite</code>), the reverse occurs:</p>
+    <ol>
+        <li>The system calls <code>getValAsQByteArray(VarID)</code>.</li>
+        <li>The function dereferences the pointer in <code>Vars.Ptr_xxx[index]</code> to get the live application value.</li>
+        <li>This value is serialized into a <code>QByteArray</code> using the appropriate <code>num2QByteArray</code> overload.</li>
+        <li>The serialized bytes are appended to the packlet body following the 2-byte <code>VarID</code>.</li>
+    </ol>
+
+    <div class="logic-note">
+        <strong>Direct Memory Interaction:</strong> Because the system uses pointers (<code>Ptr_xxx</code>), any update to the variable by the application logic (e.g., autopilot calculating a new position) is immediately available for the next transmission without an explicit copy step.
+    </div>
+
+    <h2>4. Variable Metadata Mapping</h2>
+    <p>Beyond the raw value, the ZPack logic relies on metadata stored in the <code>Vars</code> structure to govern behavior.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Metadata Field</th>
+                <th>Logic Impact</th>
+                <th>Reference</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>retainFlags_xxx</code></td>
+                <td>Determines if the variable is included in the Handshake (<code>plsHandshk</code>) or saved to disk (<code>defIsRetain</code>).</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><code>pollRate_xxx</code></td>
+                <td>Determines which <code>pollingInterval</code> (Fast vs. Slow) the variable belongs to.</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><code>BoardAddress_xxx</code></td>
+                <td>Maps the SuperVariable to a specific register offset in the 2048-byte I2C Flightboard buffer.</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+</body>
+</html>
