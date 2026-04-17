@@ -25,10 +25,6 @@ This is a quick start guid that explains the most simple use case on the most si
 [**Chapter 2 - SuperVars** ](docs/SuperVars.md)  <br>
 This chapter explains the supervar definitions.  
 
-
-<a href="https://github.com/ZackTronics/VectorFlight/blob/main/docs/ZPack.html">**Chapter 3 - ZPack**</a><br>
- AI generated descrption of the ZPack protocolol.
-
 [**Chapter Y - AI Generated Comprensive Documentation** ](docs/ChapterZ_AI_Generated_Docs.md) <br>
 This is an **--extensive--** though, largely **--unverified--** AI-generated documentation. <br>
 Its contents will be verified than migrated into chapters above.
